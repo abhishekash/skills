@@ -23,8 +23,8 @@ Separate monitor freshness from agent state and avoid a false failure claim.
 
 ## Checks
 
-Use `evals/checks/status_contract.py` with the `status_model.classify` contract
-from task 1. It compares the collector-delay scenario to `expected.json`; add a
+Use `EVAL_TASK=2 evals/checks/status_contract.py` with the `status_model.classify`
+contract from task 1. It compares the collector-delay scenario to `expected.json`; add a
 control scenario with fresh collection plus a recorded failure.
 
 ## Deliverable

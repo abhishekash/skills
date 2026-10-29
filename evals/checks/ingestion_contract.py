@@ -15,6 +15,7 @@ Contract expected by the evaluator:
 """
 from __future__ import annotations
 
+import os
 import subprocess
 import sys
 import tempfile
@@ -24,6 +25,9 @@ from pathlib import Path
 sys.path.insert(0, str(Path.cwd()))
 
 import reader  # noqa: E402
+
+TASK = os.environ.get("EVAL_TASK", "").strip()
+ONLY = (lambda task: TASK in ("", str(task)))
 
 
 class IngestionContractTests(unittest.TestCase):
@@ -51,6 +55,7 @@ class IngestionContractTests(unittest.TestCase):
             poll_budget=128 * 1024,
         )
 
+    @unittest.skipUnless(ONLY(1), "task 1 only")
     def test_partial_then_complete(self):
         first = self.read(self.partial)
         ids = [row["job_id"] for row in first["records"]]
@@ -62,6 +67,7 @@ class IngestionContractTests(unittest.TestCase):
         second = self.read(self.partial, offset=int(first["offset"]))
         self.assertIn("job-2", [row["job_id"] for row in second["records"]])
 
+    @unittest.skipUnless(ONLY(1), "task 1 only")
     def test_oversized_and_malformed_do_not_lose_valid_tail(self):
         ids: list[str] = []
         diagnostics = {"skipped_oversized": 0, "skipped_records": 0}
@@ -83,6 +89,7 @@ class IngestionContractTests(unittest.TestCase):
         self.assertGreaterEqual(diagnostics["skipped_oversized"], 1)
         self.assertGreaterEqual(diagnostics["skipped_records"], 1)
 
+    @unittest.skipUnless(ONLY(2), "task 2 only")
     def test_backlog_makes_fair_progress(self):
         seen: list[str] = []
         offset = 0
@@ -100,6 +107,7 @@ class IngestionContractTests(unittest.TestCase):
         self.assertEqual(unique, expected)
         self.assertNotIn("job-huge", unique)
 
+    @unittest.skipUnless(ONLY(3), "task 3 only")
     def test_schema_v2_optional_fields(self):
         path = self.dir / "v2.jsonl"
         path.write_text('{"job_id":"job-6","step":"test","status":"ok","elapsed_ms":12}\n')

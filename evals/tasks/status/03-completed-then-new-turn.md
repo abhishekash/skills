@@ -21,8 +21,8 @@ Model turn/session identity and precedence so the newest started turn wins.
 
 ## Checks
 
-Use `evals/checks/status_contract.py` with the `status_model.classify` contract
-from task 1. It covers `old-completed-new-started` and a completed-only control,
+Use `EVAL_TASK=3 evals/checks/status_contract.py` with the `status_model.classify`
+contract from task 1. It covers `old-completed-new-started` and a completed-only control,
 plus an out-of-order turn case.
 
 ## Deliverable

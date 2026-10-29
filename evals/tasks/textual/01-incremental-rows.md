@@ -31,6 +31,7 @@ Implement incremental table updates without changing the public contract:
 From the run directory:
 
 ```bash
+EVAL_TASK=1 python /path/to/evals/checks/textual_contract.py -v
 python -m unittest -v
 python - <<'PY'
 # Add the task-specific checks from the rubric here if they are not in tests.

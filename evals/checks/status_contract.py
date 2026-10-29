@@ -13,6 +13,7 @@ Contract:
 from __future__ import annotations
 
 import json
+import os
 import sys
 import unittest
 from pathlib import Path
@@ -20,6 +21,9 @@ from pathlib import Path
 sys.path.insert(0, str(Path.cwd()))
 
 import status_model  # noqa: E402
+
+TASK = os.environ.get("EVAL_TASK", "").strip()
+ONLY = (lambda task: TASK in ("", str(task)))
 
 
 class StatusContractTests(unittest.TestCase):
@@ -32,21 +36,43 @@ class StatusContractTests(unittest.TestCase):
     def classify(self, scenario):
         return status_model.classify(scenario, now_ns=self.fixture["now_ns"])
 
-    def test_fixture_states(self):
-        for scenario in self.fixture["scenarios"]:
-            with self.subTest(scenario=scenario["id"]):
+    @unittest.skipUnless(ONLY(1), "task 1 only")
+    def test_quiet_and_wait_states(self):
+        for scenario_id in ("quiet-work", "explicit-wait"):
+            scenario = next(s for s in self.fixture["scenarios"] if s["id"] == scenario_id)
+            with self.subTest(scenario=scenario_id):
                 result = self.classify(scenario)
-                expected = self.expected[scenario["id"]]
+                expected = self.expected[scenario_id]
                 self.assertEqual(result["state"], expected["state"])
                 self.assertEqual(bool(result["active"]), expected["active"])
                 self.assertTrue(str(result.get("evidence", "")).strip())
 
+    @unittest.skipUnless(ONLY(2), "task 2 only")
+    def test_collector_delay_and_failure_control(self):
+        for scenario_id in ("collector-delay", "recorded-failure"):
+            scenario = next(s for s in self.fixture["scenarios"] if s["id"] == scenario_id)
+            with self.subTest(scenario=scenario_id):
+                result = self.classify(scenario)
+                expected = self.expected[scenario_id]
+                self.assertEqual(result["state"], expected["state"])
+                self.assertEqual(bool(result["active"]), expected["active"])
+                self.assertTrue(str(result.get("evidence", "")).strip())
+
+    @unittest.skipUnless(ONLY(3), "task 3 only")
+    def test_completed_only_control(self):
+        scenario = next(s for s in self.fixture["scenarios"] if s["id"] == "completed-only")
+        result = self.classify(scenario)
+        self.assertEqual(result["state"], "Completed")
+        self.assertFalse(result["active"])
+
+    @unittest.skipUnless(ONLY(3), "task 3 only")
     def test_newer_started_turn_wins_over_old_completion(self):
         scenario = next(s for s in self.fixture["scenarios"] if s["id"] == "old-completed-new-started")
         result = self.classify(scenario)
         self.assertNotEqual(result["state"], "Completed")
         self.assertTrue(result["active"])
 
+    @unittest.skipUnless(ONLY(3), "task 3 only")
     def test_out_of_order_turn_is_deterministic_and_flagged(self):
         scenario = {
             "id": "out-of-order",

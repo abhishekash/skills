@@ -21,7 +21,7 @@ an explicit wait.
 
 ## Checks
 
-Use `evals/checks/status_contract.py` from the run directory. It expects:
+Use `EVAL_TASK=1 evals/checks/status_contract.py` from the run directory. It expects:
 
 ```python
 # status_model.py

@@ -1,5 +1,18 @@
 # Changelog
 
+## 1.2.1 — 2026-10-29
+
+- Scoped the evaluation checks per task (`EVAL_TASK=1|2|3`) so a task-2 solution is
+  not penalized for not implementing task 1.
+- Added style-only/unchanged checks to the Textual task-1 fixture and baseline
+  detail behavior that fails tasks 2/3 until fixed.
+- Added `recorded-failure` and `completed-only` status controls.
+- Executed two paired repetitions across all nine evaluation tasks:
+  **36/36 arms passed**, **12/12 activation decisions correct**, **zero functional
+  delta**; patch size was mixed in round 1 and mostly larger with the skill in
+  round 2. Results are preliminary and are not an effectiveness claim.
+- Published the pilot report and raw scores in `evals/results/`.
+
 ## 1.2.0 — 2026-10-29
 
 - **Installer safety:** dry runs are non-mutating for install, replace, remove,

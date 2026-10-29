@@ -1,0 +1,362 @@
+[
+  {
+    "round": "round-1",
+    "task": "ingestion-01-malformed-jsonl",
+    "arm": "with-skill",
+    "functional_check": "PASS",
+    "fixture_tests": "PASS",
+    "files_changed": 3,
+    "lines_added": 878,
+    "lines_deleted": 0
+  },
+  {
+    "round": "round-1",
+    "task": "ingestion-01-malformed-jsonl",
+    "arm": "without-skill",
+    "functional_check": "PASS",
+    "fixture_tests": "PASS",
+    "files_changed": 3,
+    "lines_added": 793,
+    "lines_deleted": 0
+  },
+  {
+    "round": "round-1",
+    "task": "ingestion-02-fair-backlog",
+    "arm": "with-skill",
+    "functional_check": "PASS",
+    "fixture_tests": "PASS",
+    "files_changed": 3,
+    "lines_added": 1246,
+    "lines_deleted": 0
+  },
+  {
+    "round": "round-1",
+    "task": "ingestion-02-fair-backlog",
+    "arm": "without-skill",
+    "functional_check": "PASS",
+    "fixture_tests": "PASS",
+    "files_changed": 3,
+    "lines_added": 729,
+    "lines_deleted": 0
+  },
+  {
+    "round": "round-1",
+    "task": "ingestion-03-schema-drift",
+    "arm": "with-skill",
+    "functional_check": "PASS",
+    "fixture_tests": "PASS",
+    "files_changed": 3,
+    "lines_added": 901,
+    "lines_deleted": 0
+  },
+  {
+    "round": "round-1",
+    "task": "ingestion-03-schema-drift",
+    "arm": "without-skill",
+    "functional_check": "PASS",
+    "fixture_tests": "PASS",
+    "files_changed": 3,
+    "lines_added": 898,
+    "lines_deleted": 0
+  },
+  {
+    "round": "round-1",
+    "task": "status-01-quiet-vs-wait",
+    "arm": "with-skill",
+    "functional_check": "PASS",
+    "fixture_tests": "PASS",
+    "files_changed": 3,
+    "lines_added": 783,
+    "lines_deleted": 0
+  },
+  {
+    "round": "round-1",
+    "task": "status-01-quiet-vs-wait",
+    "arm": "without-skill",
+    "functional_check": "PASS",
+    "fixture_tests": "PASS",
+    "files_changed": 3,
+    "lines_added": 791,
+    "lines_deleted": 0
+  },
+  {
+    "round": "round-1",
+    "task": "status-02-collector-vs-failure",
+    "arm": "with-skill",
+    "functional_check": "PASS",
+    "fixture_tests": "PASS",
+    "files_changed": 5,
+    "lines_added": 690,
+    "lines_deleted": 0
+  },
+  {
+    "round": "round-1",
+    "task": "status-02-collector-vs-failure",
+    "arm": "without-skill",
+    "functional_check": "PASS",
+    "fixture_tests": "PASS",
+    "files_changed": 3,
+    "lines_added": 430,
+    "lines_deleted": 0
+  },
+  {
+    "round": "round-1",
+    "task": "status-03-completed-then-new-turn",
+    "arm": "with-skill",
+    "functional_check": "PASS",
+    "fixture_tests": "PASS",
+    "files_changed": 3,
+    "lines_added": 923,
+    "lines_deleted": 0
+  },
+  {
+    "round": "round-1",
+    "task": "status-03-completed-then-new-turn",
+    "arm": "without-skill",
+    "functional_check": "PASS",
+    "fixture_tests": "PASS",
+    "files_changed": 3,
+    "lines_added": 738,
+    "lines_deleted": 0
+  },
+  {
+    "round": "round-1",
+    "task": "textual-01-incremental-rows",
+    "arm": "with-skill",
+    "functional_check": "PASS",
+    "fixture_tests": "PASS",
+    "files_changed": 2,
+    "lines_added": 386,
+    "lines_deleted": 11
+  },
+  {
+    "round": "round-1",
+    "task": "textual-01-incremental-rows",
+    "arm": "without-skill",
+    "functional_check": "PASS",
+    "fixture_tests": "PASS",
+    "files_changed": 2,
+    "lines_added": 582,
+    "lines_deleted": 10
+  },
+  {
+    "round": "round-1",
+    "task": "textual-02-hidden-reflow",
+    "arm": "with-skill",
+    "functional_check": "PASS",
+    "fixture_tests": "PASS",
+    "files_changed": 2,
+    "lines_added": 200,
+    "lines_deleted": 7
+  },
+  {
+    "round": "round-1",
+    "task": "textual-02-hidden-reflow",
+    "arm": "without-skill",
+    "functional_check": "PASS",
+    "fixture_tests": "PASS",
+    "files_changed": 2,
+    "lines_added": 233,
+    "lines_deleted": 6
+  },
+  {
+    "round": "round-1",
+    "task": "textual-03-stale-detail",
+    "arm": "with-skill",
+    "functional_check": "PASS",
+    "fixture_tests": "PASS",
+    "files_changed": 4,
+    "lines_added": 219,
+    "lines_deleted": 9
+  },
+  {
+    "round": "round-1",
+    "task": "textual-03-stale-detail",
+    "arm": "without-skill",
+    "functional_check": "PASS",
+    "fixture_tests": "PASS",
+    "files_changed": 3,
+    "lines_added": 129,
+    "lines_deleted": 4
+  },
+  {
+    "round": "round-2",
+    "task": "ingestion-01-malformed-jsonl",
+    "arm": "with-skill",
+    "functional_check": "PASS",
+    "fixture_tests": "PASS",
+    "files_changed": 4,
+    "lines_added": 827,
+    "lines_deleted": 0
+  },
+  {
+    "round": "round-2",
+    "task": "ingestion-01-malformed-jsonl",
+    "arm": "without-skill",
+    "functional_check": "PASS",
+    "fixture_tests": "PASS",
+    "files_changed": 3,
+    "lines_added": 660,
+    "lines_deleted": 0
+  },
+  {
+    "round": "round-2",
+    "task": "ingestion-02-fair-backlog",
+    "arm": "with-skill",
+    "functional_check": "PASS",
+    "fixture_tests": "PASS",
+    "files_changed": 3,
+    "lines_added": 1399,
+    "lines_deleted": 0
+  },
+  {
+    "round": "round-2",
+    "task": "ingestion-02-fair-backlog",
+    "arm": "without-skill",
+    "functional_check": "PASS",
+    "fixture_tests": "PASS",
+    "files_changed": 3,
+    "lines_added": 838,
+    "lines_deleted": 0
+  },
+  {
+    "round": "round-2",
+    "task": "ingestion-03-schema-drift",
+    "arm": "with-skill",
+    "functional_check": "PASS",
+    "fixture_tests": "PASS",
+    "files_changed": 3,
+    "lines_added": 1171,
+    "lines_deleted": 0
+  },
+  {
+    "round": "round-2",
+    "task": "ingestion-03-schema-drift",
+    "arm": "without-skill",
+    "functional_check": "PASS",
+    "fixture_tests": "PASS",
+    "files_changed": 2,
+    "lines_added": 929,
+    "lines_deleted": 0
+  },
+  {
+    "round": "round-2",
+    "task": "status-01-quiet-vs-wait",
+    "arm": "with-skill",
+    "functional_check": "PASS",
+    "fixture_tests": "PASS",
+    "files_changed": 3,
+    "lines_added": 726,
+    "lines_deleted": 0
+  },
+  {
+    "round": "round-2",
+    "task": "status-01-quiet-vs-wait",
+    "arm": "without-skill",
+    "functional_check": "PASS",
+    "fixture_tests": "PASS",
+    "files_changed": 3,
+    "lines_added": 603,
+    "lines_deleted": 0
+  },
+  {
+    "round": "round-2",
+    "task": "status-02-collector-vs-failure",
+    "arm": "with-skill",
+    "functional_check": "PASS",
+    "fixture_tests": "PASS",
+    "files_changed": 5,
+    "lines_added": 1017,
+    "lines_deleted": 0
+  },
+  {
+    "round": "round-2",
+    "task": "status-02-collector-vs-failure",
+    "arm": "without-skill",
+    "functional_check": "PASS",
+    "fixture_tests": "PASS",
+    "files_changed": 2,
+    "lines_added": 508,
+    "lines_deleted": 0
+  },
+  {
+    "round": "round-2",
+    "task": "status-03-completed-then-new-turn",
+    "arm": "with-skill",
+    "functional_check": "PASS",
+    "fixture_tests": "PASS",
+    "files_changed": 4,
+    "lines_added": 1106,
+    "lines_deleted": 0
+  },
+  {
+    "round": "round-2",
+    "task": "status-03-completed-then-new-turn",
+    "arm": "without-skill",
+    "functional_check": "PASS",
+    "fixture_tests": "PASS",
+    "files_changed": 2,
+    "lines_added": 561,
+    "lines_deleted": 0
+  },
+  {
+    "round": "round-2",
+    "task": "textual-01-incremental-rows",
+    "arm": "with-skill",
+    "functional_check": "PASS",
+    "fixture_tests": "PASS",
+    "files_changed": 2,
+    "lines_added": 577,
+    "lines_deleted": 11
+  },
+  {
+    "round": "round-2",
+    "task": "textual-01-incremental-rows",
+    "arm": "without-skill",
+    "functional_check": "PASS",
+    "fixture_tests": "PASS",
+    "files_changed": 2,
+    "lines_added": 381,
+    "lines_deleted": 5
+  },
+  {
+    "round": "round-2",
+    "task": "textual-02-hidden-reflow",
+    "arm": "with-skill",
+    "functional_check": "PASS",
+    "fixture_tests": "PASS",
+    "files_changed": 2,
+    "lines_added": 171,
+    "lines_deleted": 7
+  },
+  {
+    "round": "round-2",
+    "task": "textual-02-hidden-reflow",
+    "arm": "without-skill",
+    "functional_check": "PASS",
+    "fixture_tests": "PASS",
+    "files_changed": 2,
+    "lines_added": 209,
+    "lines_deleted": 6
+  },
+  {
+    "round": "round-2",
+    "task": "textual-03-stale-detail",
+    "arm": "with-skill",
+    "functional_check": "PASS",
+    "fixture_tests": "PASS",
+    "files_changed": 3,
+    "lines_added": 200,
+    "lines_deleted": 7
+  },
+  {
+    "round": "round-2",
+    "task": "textual-03-stale-detail",
+    "arm": "without-skill",
+    "functional_check": "PASS",
+    "fixture_tests": "PASS",
+    "files_changed": 2,
+    "lines_added": 139,
+    "lines_deleted": 3
+  }
+]

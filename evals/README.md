@@ -7,9 +7,11 @@ skills:
 - `local-agent-ingestion`
 - `agent-session-status`
 
-**Status: suite implemented, comparative runs pending.** Packaging checks and
-executable example tests are not effectiveness evidence. No claim that the skills
-improve agent results is made until paired runs are executed and reported.
+**Status: pilot executed; replication pending.** A two-pair-per-task pilot on
+2026-10-29 had zero functional delta (both arms passed every task), 12/12
+correct activation decisions, and mostly larger with-skill patches in round 2. Packaging checks and executable example tests are
+still not effectiveness evidence. No claim that the skills improve agent results
+is made until repeated paired runs are executed and reported.
 
 ## What is here
 
@@ -130,8 +132,9 @@ Publish:
 - cases where the skill performs worse;
 - a statement of what the suite does not establish.
 
-Use [`results/TEMPLATE.md`](results/TEMPLATE.md). Until filled, keep
-[`results/PENDING.md`](results/PENDING.md) as the status.
+Use [`results/TEMPLATE.md`](results/TEMPLATE.md). Read the pilot in
+[`results/PILOT-2026-10-29.md`](results/PILOT-2026-10-29.md); keep
+[`results/PENDING.md`](results/PENDING.md) as the status until replicated.
 
 ## Limits
 
@@ -140,4 +143,4 @@ Use [`results/TEMPLATE.md`](results/TEMPLATE.md). Until filled, keep
 - Executable checks measure behavior on these fixtures; they do not cover every
   runtime or terminal.
 - A blind rubric is still judgment; two independent reviewers are better than one.
-- The comparative runs are **pending** in this repository.
+- The pilot is **preliminary** and has only two pairs per task.

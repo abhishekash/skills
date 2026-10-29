@@ -17,7 +17,8 @@ python -m unittest -v
 
 `order_board.py` exposes the contract used by the checks:
 
-- `apply_orders(orders)` — keep the `DataTable` in sync.
+- `apply_orders(orders)` — keep the `DataTable` in sync. `Order` has an optional
+  `style` used for a style-only update test.
 - `begin_detail(order_id) -> token` — start a detail request.
 - `apply_detail(token, order_id, text)` — render the current request, defer when
   hidden/zero-width, return `rendered`, `deferred`, or `stale`.

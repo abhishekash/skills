@@ -185,12 +185,13 @@ Three different levels, not one claim:
 |---|---|---|
 | Packaging | Manifests, frontmatter, plugin skill paths, installer copy/link/remove, dry-run non-mutation, `npx skills` discovery | CI-checked |
 | Executable examples | Incremental `DataTable` helper and hidden/async detail example, with headless Textual tests (Python 3.13.5, Textual 8.2.8, Rich 15.0.0) | CI-checked |
-| Agent evaluations | Paired with/without-skill runs on independent fixtures, executable contract checks, blind rubric | **Suite implemented; comparative runs pending** |
+| Agent evaluations | Paired with/without-skill runs on independent fixtures, executable contract checks, blind rubric | **Pilot executed (2 pairs/task, zero functional delta); no blind review** |
 
 Packaging and example tests are **not** evidence that an agent using the skill
-produces better results. The evaluation suite and its current status are in
-[`evals/`](evals/README.md); until `evals/results/PENDING.md` is replaced with
-real runs, the effectiveness claim stays open.
+produces better results. The pilot and its limits are in
+[`evals/results/PILOT-2026-10-29.md`](evals/results/PILOT-2026-10-29.md).
+The pilot had two pairs per task, zero functional delta, and mostly larger
+with-skill patches in round 2; the effectiveness claim stays open.
 
 ## Pack layout
 

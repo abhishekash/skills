@@ -21,8 +21,8 @@ Implement fair, resumable progress across repeated polls.
 
 ## Checks
 
-Use `evals/checks/ingestion_contract.py` with the `read_once` contract from task
-1. It loops repeated polls against `build_backlog.jsonl` and fails if the tail is
+Use `EVAL_TASK=2 evals/checks/ingestion_contract.py` with the `read_once` contract
+from task 1. It loops repeated polls against `build_backlog.jsonl` and fails if the tail is
 not reached.
 
 ## Deliverable

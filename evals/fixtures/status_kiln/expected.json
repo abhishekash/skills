@@ -1,8 +1,34 @@
 {
-  "quiet-work": {"state": "Working (quiet)", "active": true},
-  "explicit-wait": {"state": "Waiting", "active": false},
-  "collector-delay": {"state": "Monitor delayed", "active": false},
-  "old-completed-new-started": {"state": "Working (quiet)", "active": true},
-  "process-progress": {"state": "Processing", "active": true},
-  "unconfirmed": {"state": "Unconfirmed", "active": false}
+  "quiet-work": {
+    "state": "Working (quiet)",
+    "active": true
+  },
+  "explicit-wait": {
+    "state": "Waiting",
+    "active": false
+  },
+  "collector-delay": {
+    "state": "Monitor delayed",
+    "active": false
+  },
+  "old-completed-new-started": {
+    "state": "Working (quiet)",
+    "active": true
+  },
+  "process-progress": {
+    "state": "Processing",
+    "active": true
+  },
+  "unconfirmed": {
+    "state": "Unconfirmed",
+    "active": false
+  },
+  "recorded-failure": {
+    "state": "Error",
+    "active": false
+  },
+  "completed-only": {
+    "state": "Completed",
+    "active": false
+  }
 }

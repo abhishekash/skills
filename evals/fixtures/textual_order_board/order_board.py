@@ -24,6 +24,7 @@ class Order:
     id: str
     task: str
     state: str
+    style: str = ""
 
 
 class OrderBoard(App):
@@ -49,7 +50,7 @@ class OrderBoard(App):
         self.apply_orders(self.orders)
 
     # Baseline: clear and rebuild every time. No stable signature, no style
-    # comparison, no row-height preservation.
+    # comparison, and the detail path ignores both visibility and the token.
     def apply_orders(self, orders: list[Order]) -> str:
         table = self.query_one("#orders", DataTable)
         table.clear()
@@ -62,19 +63,11 @@ class OrderBoard(App):
         self.detail_token += 1
         return self.detail_token
 
-    # Baseline: ignores the token, so A -> B -> A can accept an old response.
     def apply_detail(self, token: int, order_id: str, text: str) -> str:
         log = self.query_one("#detail", RichLog)
-        if not log.display or log.size.width <= 0:
-            self.pending_detail = (token, order_id, text)
-            return "deferred"
         log.clear()
         log.write(Text(text))
         return "rendered"
 
     def show_detail(self) -> str:
-        if self.pending_detail is None:
-            return "empty"
-        token, order_id, text = self.pending_detail
-        self.pending_detail = None
-        return self.apply_detail(token, order_id, text)
+        return "empty"

@@ -36,7 +36,8 @@ def read_once(path, *, offset=0, record_budget, poll_budget) -> dict:
     }
 ```
 
-Run it with the fixture's `generate.py` in the run directory. The check uses
+Run it with `EVAL_TASK=1` and the fixture's `generate.py` in the run
+directory. The check uses
 small budgets so the fixture is fast.
 
 ## Deliverable

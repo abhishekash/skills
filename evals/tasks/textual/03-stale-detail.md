@@ -22,6 +22,8 @@ Bind each response to its request generation and reject obsolete responses.
 
 ## Checks
 
+EVAL_TASK=3 python /path/to/evals/checks/textual_contract.py -v
+
 From the run directory, call the controller directly and/or use
 `App.run_test()`. Assert the final detail is the latest A text and the old A text
 never appears.

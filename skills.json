@@ -1,6 +1,6 @@
 {
   "name": "agenturm-tui-skills",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Nine focused engineering skills for designing, building, testing, and operating a truthful terminal cockpit for live agent work.",
   "license": "MIT",
   "repository": "https://github.com/abhishekash/skills",

@@ -23,8 +23,8 @@ for an unchanged source.
 
 ## Checks
 
-Use `evals/checks/ingestion_contract.py` with the `read_once` contract from task
-1. It includes a v2 record with optional `elapsed_ms` and no `duration_ms`.
+Use `EVAL_TASK=3 evals/checks/ingestion_contract.py` with the `read_once` contract
+from task 1. It includes a v2 record with optional `elapsed_ms` and no `duration_ms`.
 Add the unchanged-source lookback test separately (fake clock or an injected
 interval).
 

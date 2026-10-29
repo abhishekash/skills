@@ -13,13 +13,15 @@ intentionally naive) and pass only after the task's behavior is implemented. The
 are **not** run by the repository's packaging CI, because they require an agent's
 solution in the run directory.
 
-Run from the run directory:
+Run from the run directory, setting the task number:
 
 ```bash
-python /path/to/evals/checks/textual_contract.py -v
-python /path/to/evals/checks/ingestion_contract.py -v
-python /path/to/evals/checks/status_contract.py -v
+EVAL_TASK=1 python /path/to/evals/checks/textual_contract.py -v
+EVAL_TASK=1 python /path/to/evals/checks/ingestion_contract.py -v
+EVAL_TASK=1 python /path/to/evals/checks/status_contract.py -v
 ```
+
+With no `EVAL_TASK`, each script runs all of its checks.
 
 The checks are deliberately behavioral, not a style test. A passing check does
 not prove the patch is good; use the rubric for regressions and unnecessary

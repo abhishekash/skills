@@ -23,6 +23,8 @@ when the pane becomes visible or is resized.
 
 ## Checks
 
+EVAL_TASK=2 python /path/to/evals/checks/textual_contract.py -v
+
 Use `App.run_test(size=(80,24))`. Hide `#detail`, call `apply_detail(...)`, assert
 the log has no lines and the result is `deferred`; show it, call `show_detail()`,
 assert the text is present and not one-character-per-line. Add a resize check.
