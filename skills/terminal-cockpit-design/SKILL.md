@@ -133,9 +133,10 @@ Queue additions/reordering behind `List changed · Refresh order`. Apply on
 explicit refresh or re-entry, preserving selection by stable ID. Never move the
 row under the cursor.
 
-**Never cap the list** to make room for a header. In Agenturm, capping the agent
-list at 8–10 rows was rejected immediately; the correct fix was a 25% top
-overview with list and inspector sharing the remaining height.
+A request to show only 8–10 agents led to an agent-panel height cap. The user
+corrected it: do not reduce the agent frame; take 25% from the top and share the
+remaining height. The lesson: to make room, rebalance the whole layout, never
+amputate the primary data list.
 
 If internal review sessions are hidden by default, enforce that exclusion
 everywhere: session rows, connection counts, summaries, and traces. Filtering
@@ -167,6 +168,31 @@ Expanded detail adds:
 
 Say "No linked trace recorded", not nothing. Say "Request: Not captured", not
 "no prompt exists".
+
+## Related-record views
+
+The primary list is not the whole product. Each related view owns a different
+question, and each must keep its own filters and evidence:
+
+- **Activity:** chronological evidence with type, short action, and recorded
+  time. Preserve Prompts/Errors filters and paged history. Follow-live is
+  explicit.
+- **MCP Calls:** server/tool, state, duration. Separate arguments, result, and
+  error. Missing server identity is "Not reported". Configured servers appear
+  only after an observed call; aggregate metric counts (with no session/call
+  identity) are shown separately from individual calls.
+- **Traces:** operation tree + selected-span evidence. Unknown duration stays
+  unknown. A waterfall is optional only when reliable timestamps exist.
+- **Host:** process evidence, with exact session association shown separately.
+  An open process is not proof of active agent work.
+- **Metrics:** units, scope, reported coverage, and missing-data labels. No
+  invented price estimates or implied per-session attribution for service-wide
+  metrics.
+- **Findings:** review queue with occurrence count and exact navigation to the
+  source evidence.
+
+Do not let a related view silently inherit a filter it does not show. If a
+global scope is active, display it or summarize it.
 
 ## Status and trust
 

@@ -102,7 +102,7 @@ Six things explain almost every TUI decision that survived:
 | "Still very cluttered" | Default inspector showed raw output, duplicate activity table, unconfigured AI button | Default inspector reduced to status + latest request/action; raw content only under `e`/Activity | `test_long_commands_and_output_are_never_in_the_default_overview` |
 | Row previews wrapped at old width after resize | Table reflow used stale column widths | Set `column_widths` before rebuilding rows; recompute previews after actual width | `test_resize_rewraps_previews...` |
 | Inspector stuck at one character per line | Update arrived while pane hidden; reported width 0; RichLog cached 1-cell strips | Do not render hidden panes; reflow and rebuild when visible | `test_hidden_pane...` (issue #24 / PR #30) |
-| List capped to 8–10 rows to make space | Misread "use 25% from top" as "cap the list" | Remove cap; give top 25%, share remaining height between list and inspector | `test_compact_overview_leaves_full_height...` |
+| List capped to 8–10 rows | User initially asked not to see more than 8–10 agents, but the height cap reduced the agent frame; then asked for a 25% top overview instead | Remove cap; give top 25%, share remaining height between list and inspector | `test_compact_overview_leaves_full_height...` |
 
 ### 4.2 Live data, selection, and navigation
 
@@ -216,11 +216,13 @@ row 7+ task rows
 
 ### 5.3 No list cap
 
-The first 25%-header implementation capped the list at 8–10 agents. The user
-rejected it: "I don't want to reduce the agent frame." The correct trade was
-global: top 25%, then list and inspector share the remaining height to the same
-bottom edge. Twelve agents remain in the scrollable table; the viewport is not
-artificially truncated.
+The first attempt to give the header more room capped the list at 8–10 agents,
+following the user's "I don't want to see more than 8–10 agents" request. The
+user then rejected the reduced agent frame and asked for a 25% top overview:
+"I don't want to reduce the agent frame, just trade off to make space for the
+top. Use 25% from top." The correct trade was global: top 25%, then list and
+inspector share the remaining height to the same bottom edge. Twelve agents
+remain in the scrollable table; the viewport is not artificially truncated.
 
 **Rule:** to make room, rebalance the whole layout, never amputate the primary
 data list.
@@ -276,7 +278,7 @@ sessions do not dominate the first screen.
 | Terminal tower logo in the masthead | Malformed at cell resolution, inconsistent with SVG, consumed 5–6 rows | One-line text wordmark; logo lives in README/site only |
 | All shortcuts on top, then beside scope, then bottom | Duplicated keys, overcrowded the header, confused location | Context-sensitive bottom footer; top legend only after redesign exploration |
 | Four metric cards + tagline + health in header | Competed with the primary task list | Compact working/attention counts; details in tooltips/Metrics |
-| Cap agent list at 8–10 rows | Cut the core data to make room for chrome | 25% top overview; no list cap; shared remaining height |
+| Cap agent list at 8–10 rows | A height cap shrinks the primary data frame even when the user still needs it | 25% top overview; no list cap; shared remaining height |
 | Default inspector with raw output and duplicate activity table | "Still cluttered"; raw content dominated | Summary first; prompts/actions only on expand |
 | "More" on a separate controls row | Looked like a filter, not navigation | More/Other views beside the tabs (or one labelled view picker at <76 cols) |
 | Rewrite in Rust to reduce CPU | The bottleneck was redundant work, not Python | Incremental imports + polling/repaint fixes; Rust deferred until profiling justifies it |

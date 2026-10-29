@@ -339,6 +339,18 @@ self.snapshot = Snapshot(...) # atomic publication
 - Copy: prefer the current text selection; otherwise the selected record; route
   to the OS clipboard in a worker and report fallback behavior honestly.
 
+## Search
+
+- Search is per-view. Keep a query dict keyed by page; do not clear another
+  view's inventory or selection because one view is searching.
+- Debounce remote searches (~300 ms) and capture the scope before the request.
+- Show "Filtering…" until the returned snapshot's query matches the current
+  input; otherwise a stale result looks like a new one.
+- `Clear` appears only when there is a query; clearing focuses the input.
+- `Esc` exits search before it collapses a panel or navigates back.
+- Typing must not trigger single-key navigation.
+- Preserve the query across refresh and view switches, but do not persist it.
+
 ## Repaint budget
 
 - Update a status only if its text changed; otherwise return.
