@@ -72,6 +72,11 @@ def main() -> int:
             errors.append(f"{path}: description length {len(description)} not in 80..1024")
         if not ROUTING_RE.search(description):
             errors.append(f"{path}: description lacks routing language (Use when/for/...)")
+        quoted = description.startswith(('"', "'")) and description.endswith(('"', "'"))
+        if not quoted and ": " in description:
+            errors.append(f"{path}: unquoted ': ' in description breaks strict YAML parsing")
+        if not quoted and " #" in description:
+            errors.append(f"{path}: unquoted ' #' in description starts a YAML comment")
 
         for section in REQUIRED_SECTIONS:
             if section not in text:

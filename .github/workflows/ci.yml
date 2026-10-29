@@ -15,6 +15,9 @@ jobs:
       - uses: actions/setup-python@v6
         with:
           python-version: "3.12"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
       - name: Validate skills
         run: python3 scripts/validate_skills.py
       - name: Validate installer and packaging
@@ -36,3 +39,7 @@ jobs:
           python3 -m json.tool .claude-plugin/plugin.json >/dev/null
           python3 -m json.tool .claude-plugin/marketplace.json >/dev/null
           python3 -m json.tool .codex-plugin/plugin.json >/dev/null
+      - name: Verify discovery with the open skills CLI
+        run: |
+          NO_COLOR=1 npx -y skills@1.7.4 add . -l | tee /tmp/skills-list.txt
+          grep -F 'Found 9 skills' /tmp/skills-list.txt

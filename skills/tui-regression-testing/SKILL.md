@@ -1,6 +1,6 @@
 ---
 name: tui-regression-testing
-description: Test terminal UIs without trusting screenshots: headless Textual Pilot tests, geometry and keyboard assertions, stale-data race tests, resource budgets, real-PTY shutdown checks, and core-flow regressions. Use after any TUI layout, focus, filtering, or live-update change.
+description: Test terminal UIs without trusting screenshots — headless Textual Pilot tests, geometry and keyboard assertions, stale-data race tests, resource budgets, real-PTY shutdown checks, and core-flow regressions. Use after any TUI layout, focus, filtering, or live-update change.
 ---
 
 # TUI regression testing

@@ -1,6 +1,6 @@
 ---
 name: local-first-monitoring-privacy
-description: Design the privacy boundary for a local monitor that captures agent prompts, tool output, paths, and telemetry: loopback defaults, owner-only files, redaction, metadata-only capture, allowlisted preferences, content-free diagnostics, previewed exports, and honest retention. Use before shipping or reviewing a local observability tool.
+description: Design the privacy boundary for a local monitor that captures agent prompts, tool output, paths, and telemetry — loopback defaults, owner-only files, redaction, metadata-only capture, allowlisted preferences, content-free diagnostics, previewed exports, and honest retention. Use before shipping or reviewing a local observability tool.
 ---
 
 # Local-first monitoring privacy

@@ -1,6 +1,6 @@
 ---
 name: local-agent-ingestion
-description: Read local agent session logs and databases safely and continuously: bounded byte budgets, fair resumption, schema drift, malformed records, content-free diagnostics, and metadata-only capture. Use when building or debugging a local reader for Codex, Claude Code, OpenCode, Pi, or similar agent runtimes.
+description: Read local agent session logs and databases safely and continuously — bounded byte budgets, fair resumption, schema drift, malformed records, content-free diagnostics, and metadata-only capture. Use when building or debugging a local reader for Codex, Claude Code, OpenCode, Pi, or similar agent runtimes.
 ---
 
 # Local agent ingestion
