@@ -1,0 +1,66 @@
+{
+  "now_ns": 2000000000000000000,
+  "scenarios": [
+    {
+      "id": "quiet-work",
+      "job_id": "job-7",
+      "turn_id": "turn-2",
+      "run_state": "running",
+      "waiting_for": "",
+      "last_record_ns": 1999999880000000000,
+      "collector": {"last_success_ns": 1999999998000000000, "backlog_bytes": 0},
+      "process": {}
+    },
+    {
+      "id": "explicit-wait",
+      "job_id": "job-8",
+      "turn_id": "turn-1",
+      "run_state": "waiting",
+      "waiting_for": "Approval",
+      "last_record_ns": 1999999100000000000,
+      "collector": {"last_success_ns": 1999999998000000000, "backlog_bytes": 0},
+      "process": {}
+    },
+    {
+      "id": "collector-delay",
+      "job_id": "job-9",
+      "turn_id": "turn-3",
+      "run_state": "running",
+      "waiting_for": "",
+      "last_record_ns": 1999999100000000000,
+      "collector": {"last_success_ns": 1999999940000000000, "backlog_bytes": 0},
+      "process": {"alive": true, "observed_at_ns": 1999999999000000000, "last_progress_ns": 0}
+    },
+    {
+      "id": "old-completed-new-started",
+      "job_id": "job-10",
+      "turn_id": "turn-2",
+      "previous_turn": {"turn_id": "turn-1", "run_state": "completed", "ended_ns": 1999999700000000000},
+      "run_state": "running",
+      "waiting_for": "",
+      "last_record_ns": 1999999880000000000,
+      "collector": {"last_success_ns": 1999999998000000000, "backlog_bytes": 0},
+      "process": {}
+    },
+    {
+      "id": "process-progress",
+      "job_id": "job-11",
+      "turn_id": "turn-4",
+      "run_state": "running",
+      "waiting_for": "Tool response: build",
+      "last_record_ns": 1999999100000000000,
+      "collector": {"last_success_ns": 1999999998000000000, "backlog_bytes": 0},
+      "process": {"alive": true, "observed_at_ns": 1999999999000000000, "last_progress_ns": 1999999998000000000}
+    },
+    {
+      "id": "unconfirmed",
+      "job_id": "job-12",
+      "turn_id": "turn-5",
+      "run_state": "running",
+      "waiting_for": "",
+      "last_record_ns": 1999999100000000000,
+      "collector": {"last_success_ns": 1999999998000000000, "backlog_bytes": 0},
+      "process": {"alive": true, "observed_at_ns": 1999999800000000000, "last_progress_ns": 0}
+    }
+  ]
+}

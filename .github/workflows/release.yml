@@ -19,14 +19,19 @@ jobs:
       - name: Validate
         run: |
           python3 scripts/validate_skills.py
-          python3 -m py_compile scripts/install.py scripts/validate_skills.py
+          python3 scripts/validate_evals.py
+          python3 -m py_compile scripts/install.py scripts/validate_skills.py scripts/validate_evals.py evals/harness.py evals/checks/*.py
+      - name: Install test dependencies
+        run: python3 -m pip install --disable-pip-version-check -r requirements-dev.txt
+      - name: Run tests
+        run: python3 -m unittest discover -s tests -v
       - name: Build skill pack
         run: |
           find . -type d -name __pycache__ -prune -exec rm -rf {} +
           mkdir -p dist
           zip -r "dist/agenturm-tui-skills-${GITHUB_REF_NAME}.zip" \
-            skills README.md LICENSE CHANGELOG.md skills.json install.sh scripts \
-            .claude-plugin .codex-plugin package.json \
+            skills README.md LICENSE CHANGELOG.md skills.json install.sh scripts evals \
+            .claude-plugin .codex-plugin package.json requirements-dev.txt \
             -x '*/__pycache__/*' '*.pyc'
       - name: Publish release
         env:

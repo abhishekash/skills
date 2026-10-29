@@ -20,6 +20,15 @@ jobs:
           node-version: "22"
       - name: Validate skills
         run: python3 scripts/validate_skills.py
+      - name: Validate evaluations
+        run: python3 scripts/validate_evals.py
+      - name: Compile Python tools
+        run: |
+          python3 -m py_compile scripts/install.py scripts/validate_skills.py scripts/validate_evals.py evals/harness.py evals/checks/*.py
+      - name: Install example test dependencies
+        run: python3 -m pip install --disable-pip-version-check -r requirements-dev.txt
+      - name: Run installer, packaging, and example tests
+        run: python3 -m unittest discover -s tests -v
       - name: Validate installer and packaging
         run: |
           chmod +x install.sh scripts/install.py

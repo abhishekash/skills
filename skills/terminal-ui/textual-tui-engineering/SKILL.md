@@ -12,6 +12,65 @@ rendering consistent while the user navigates.
 This skill is the implementation counterpart to `terminal-cockpit-design`. It
 assumes the IA and status language are decided.
 
+## Operating contract
+
+**Purpose.** Produce a scoped Textual implementation or repair that preserves
+selection, evidence identity, focus, shutdown safety, and refresh correctness
+under live data.
+
+**Inputs.** The target checkout; the user-facing requirement or reproduced
+defect; the supported Textual/Rich/Python versions; the existing IA, status
+model, and test seams. Inspect these before proposing changes. Ask only for
+decisions that cannot be discovered from the code or requirements.
+
+**Workflow.**
+
+1. Reproduce the defect or write the acceptance test for the feature at a real
+   terminal size. Include the core data flow, not just the widget.
+2. Identify the boundary that owns the bug: feed/scope, view model, table
+   projection, inspector rendering, focus/navigation, theme, or shutdown.
+3. Make the smallest change at that boundary. Preserve stable IDs and existing
+   behavior outside the scope.
+4. Add or update a headless regression plus a real-PTY check when shutdown or
+   terminal restoration is involved.
+5. Run the focused tests, the full suite, `compileall`, and `git diff --check`.
+6. Report the reproduced failure, the change, the tests, and what remains
+   unverified.
+
+**Deliverable.** A focused patch and a verification report tied to the actual
+defect/feature: files changed, commands run, results, supported versions, and
+remaining limits. Do not claim a broad Textual compatibility range from one
+tested version.
+
+**Completion.** The acceptance test fails on the reviewed baseline and passes
+after the change; the core flow still works at wide and compact sizes; no
+unrelated behavior moved; the report names the tested versions and unverified
+platform behavior.
+
+## Reading this skill
+
+- **Invariant** — required for correctness or trust (stable identity, no stale
+  evidence, no unbounded work, valid cleanup).
+- **Default** — a good starting point; adapt it to the application's product
+  brief and terminal constraints.
+- **Case study** — an Agenturm-specific decision or measurement. Its context and
+  limits are in [`references/agenturm-implementation.md`](references/agenturm-implementation.md).
+
+Numbers in this skill are labeled where they appear. Unlabeled examples are
+illustrative defaults, not universal requirements.
+
+## Snippet conventions
+
+- **Runnable:** [`examples/incremental_table/`](examples/incremental_table/) and
+  [`examples/async_detail/`](examples/async_detail/) are tested with Python
+  3.13.5, Textual **8.2.8**, and Rich **15.0.0**. Other versions are not claimed.
+- **Schematic:** all other Python blocks are sketches. They assume the helpers,
+  imports, CSS, and app methods described around them. Do not paste a schematic
+  into an app without wiring its contract.
+- The `Tabs`, `DataTable`, `RichLog`, and shutdown snippets are deliberately
+  partial; the runnable examples show complete, importable code for the two
+  highest-risk patterns (incremental rows and hidden/async detail).
+
 ## When to use
 
 - Building a multi-pane Textual app with `DataTable`, `RichLog`, `Tabs`, and
@@ -45,14 +104,16 @@ Textual app               owns composition, focus, navigation, rendering
 - Navigation state is explicit: page, scope, filters, selected stable ID,
   pagination cursor, scroll anchor, focus target, expansion.
 
-If all of this lives in one 160 KB file, extract at the seams that change for
-different reasons, not in one rewrite.
+If all of this lives in one very large module (Agenturm's reached roughly
+160 KB), extract at the seams that change for different reasons, not in one
+rewrite.
 
 ## App shell and tabs
 
 A three-row shell beats a stack of nested containers:
 
 ```python
+# schematic: imports and CockpitTabs are app-defined
 def compose(self):
     with Horizontal(id="masthead"):
         yield Static(masthead(), id="brand")
@@ -75,6 +136,7 @@ For a shared control row under the tabs, subclass `TabbedContent` and inject it
 after the `Tabs` child:
 
 ```python
+# schematic: scope_controls() is app-defined
 class CockpitTabs(TabbedContent):
     def compose(self):
         for widget in super().compose():
@@ -102,6 +164,7 @@ Do not let `DataTable` own column layout. Build a projection layer:
 Drop order should preserve subject and status. In Agenturm:
 
 ```python
+# illustrative: adapt the drop order to your columns
 DROP_ORDER = {
     "agent-table": (2,),                  # drop Updated, keep Task/State
     "activity-table": (1, 0),             # drop Type, Time before Action
@@ -120,6 +183,7 @@ The resizing algorithm:
 5. Preserve cursor row and scroll offset by stable row key.
 
 ```python
+# schematic: requires column_layout(), column_specs, full_rows, preview_height()
 def fit_columns(self):
     visible, widths = column_layout(self.id, self.column_specs, self.scrollable_content_region.width)
     if widths == self.column_widths and visible == self.visible_columns:
@@ -147,40 +211,81 @@ separate hidden column.
 
 Repainting the whole table on every refresh causes flicker, loses selection, and
 shows up as high CPU. Keep a signature of the logical rows; if unchanged, return.
-If keys and row heights match, update only changed cells.
+Only compute existing row heights after proving the incoming keys match.
+
+> **Runnable example:** [`examples/incremental_table/`](examples/incremental_table/)
+> contains a tested helper (`table_projection.py`), a demo app, and tests for
+> empty→populated, append, removal, reorder, style-only changes, row-height
+> changes, invalidation, selection fallback, and retry after a failed update.
+>
+> The snippet below is **schematic**: it assumes `cell_signature`, `height_for`,
+> `project`, and `invalidate()` from that example.
 
 ```python
-def fill(self, name, rows, preserve=None):
-    signature = tuple((key, tuple(str(v) for v in values)) for key, values, _ in rows)
-    if self.table_signatures.get(name) == signature:
-        return
-    self.table_signatures[name] = signature
-    table = self.query_one("#" + name, DataTable)
+# Schematic. See examples/incremental_table/table_projection.py for the helper.
+def apply(self, rows, preserve=None):
+    projected = [(row.key, tuple(self.project(row.cells))) for row in rows]
+    signature = self._signature(projected)   # content + styles/spans + height + generation
+    if signature == self.applied_signature:
+        return "unchanged"
+
+    table = self.table
     selected = preserve or current_key(table)
-    scroll, old_index = table.scroll_offset, table.cursor_row
+    old_index = table.cursor_row
+    scroll = table.scroll_offset
 
     with table.prevent(DataTable.RowHighlighted):
-        keys_match = [k.value for k in table.rows] == [k for k, _, _ in rows]
-        heights_match = all(table.rows[k].height == table.preview_height(v) for k, v, _ in rows)
+        existing = [key.value for key in table.rows]
+        incoming = [key for key, _ in projected]
+        keys_match = existing == incoming
+
+        heights_match = False
+        if keys_match:                       # never index table.rows[k] before this
+            by_key = {key.value: key for key in table.rows}
+            heights_match = all(
+                table.rows[by_key[key]].height == self.height_for(values)
+                for key, values in projected
+            )
+
         if keys_match and heights_match:
-            for key, values, _ in rows:
-                table.full_rows[key] = values
-                for column, value in zip(table.columns, table.project(values)):
-                    previous = table.get_cell(key, column)
-                    if previous != value or getattr(previous, "style", None) != getattr(value, "style", None):
-                        table.update_cell(key, column, value)
+            by_key = {key.value: key for key in table.rows}
+            for key, values in projected:
+                for column, value in zip(table.columns, values):
+                    previous = table.get_cell(by_key[key], column)
+                    if cell_signature(previous) != cell_signature(value):
+                        table.update_cell(by_key[key], column, value)
+            result = "updated"
         else:
             table.clear()
-            for key, values, _ in rows:
-                table.add_row(*values, key=key)
-        if rows:
-            index = next((i for i, (k, _, _) in enumerate(rows) if k == selected), 0)
+            for key, values in projected:
+                table.add_row(*values, key=key, height=self.height_for(values))
+            result = "rebuilt"
+
+        if projected:
+            index = next((i for i, (key, _) in enumerate(projected) if key == selected), None)
+            if index is None:
+                index = min(max(old_index, 0), len(projected) - 1)
             table.move_cursor(row=index, scroll=False)
-            table.scroll_to(x=scroll.x, y=max(0, scroll.y + index - old_index), animate=False)
+            table.scroll_to(x=scroll.x, y=scroll.y, animate=False)
+
+    # Record only after the successful update; a failed update stays retryable.
+    self.applied_signature = signature
+    return result
 ```
 
-**Rich Text equality excludes its base style.** Compare `previous.style` too, or
-a theme change will not recolor otherwise identical cells.
+The signature must include:
+
+- displayed cell content;
+- Rich base style and span styles (`Text.__eq__`/`str()` is not enough);
+- row height, or a generation bumped by `invalidate()` on resize/projection/theme
+  changes;
+- the projection/column configuration if it can change.
+
+If the selected key disappears, choose the nearest valid row (or an explicit
+empty selection). Do not silently select a different record and present its
+evidence as if it were the old one. For wrapped, variable-height rows, restore a
+cell-based scroll offset (as above) or a saved top-row key; do not assume row
+index equals visual offset.
 
 ## Inspector and reflow
 
@@ -197,6 +302,7 @@ and a theme change must translate the cached styles.
 - Use `call_after_refresh` for work that needs final geometry.
 
 ```python
+# schematic: requires SelectableRichLog and app-owned inspector state
 def schedule_inspector_reflow(self):
     if self.inspector_reflow_pending:
         return
@@ -221,6 +327,7 @@ width does not rebuild them. Guard against rendering when width is invalid, and
 force a rebuild when the pane becomes visible.
 
 ```python
+# schematic: inside the widget's update path
 if self.size.width <= 0:
     self.pending_rebuild = True
     return
@@ -257,6 +364,7 @@ not the layout.
 Capture every input that affects a response **before** I/O:
 
 ```python
+# schematic: dataclass imports omitted
 @dataclass(frozen=True)
 class FeedScope:
     service: str
@@ -293,6 +401,7 @@ Concurrency:
 - Verify stale scopes and pagination history before assignment.
 
 ```python
+# schematic: assumes RequestBatch, FeedScope and Snapshot
 requests = RequestBatch(api, stop)
 requests.prefetch(("/api/health", "/api/metrics", "/api/connections", ...))
 health = get("/api/health")
@@ -380,6 +489,7 @@ styles.
 Interrupt safety is a property of the whole cleanup, not each `join()`.
 
 ```python
+# schematic: signal/threading/contextlib/ExitStack imports omitted
 @contextmanager
 def _ignore_cleanup_interrupts():
     main = threading.current_thread() is threading.main_thread()
@@ -456,3 +566,39 @@ reads. In Agenturm, a missing `activity_prompts` left the demo stuck on
 - [ ] Theme change rebuilds cached strips and contrast passes.
 - [ ] Whole-cleanup SIGINT shield; bounded joins; real-PTY test.
 - [ ] Core multi-agent flow test passes at wide and 80×24.
+
+## Worked example
+
+**Input.** A table currently shows two orders; a refresh appends one order,
+removes another, changes a style, and the selected order disappears.
+
+**Expected output.** One apply call:
+- takes the rebuild path because the key set changed;
+- updates the style in the incremental path when only style changed;
+- preserves the selected order when its key remains;
+- falls back to the nearest valid row when it does not;
+- returns `rebuilt`/`updated` and records the signature only after success;
+- the verification report names the tested Textual/Rich versions and the failed
+  baseline behavior.
+
+The runnable version is
+[`examples/incremental_table/table_projection.py`](examples/incremental_table/table_projection.py).
+
+## Related skills
+
+These are separate skills. Naming one here does **not** load it; use your host's
+skill-loading mechanism (for example, the `skill` tool in OpenCode, or the
+equivalent command in another harness).
+
+- `terminal-cockpit-design` — decide the hierarchy, state language, and keys
+  before implementing them.
+- `tui-regression-testing` — build the test matrix this skill's changes must
+  pass.
+- `agent-session-status` — define the state/evidence contract the UI renders.
+
+## Case study
+
+Agenturm's implementation details, file names, measured budgets, and historical
+decisions are in
+[`references/agenturm-implementation.md`](references/agenturm-implementation.md).
+They illustrate the invariants; they are not requirements for every Textual app.

@@ -10,6 +10,46 @@ data, at a size a human can actually read. Most demo failures are not encoding
 problems; they are claims the app cannot support or assets that were drawn by
 hand instead of rendered from source.
 
+## Operating contract
+
+**Purpose.** Produce an honest, legible demo of a real terminal UI without leaking
+private data or implying behavior the app does not have.
+
+**Inputs.** The real app and a synthetic dataset; the target destination
+(README/site/profile); the destination's width limits; the brand assets and their
+canonical source; the capture/encode tools available; the storyboard questions.
+
+**Workflow.**
+
+1. Define the investigation story and the synthetic fixture.
+2. Choose capture grids for the destination (wide and README).
+3. Capture the real TUI through its real actions.
+4. Compose frames; render brand assets from canonical source.
+5. Encode with even dimensions and a bounded duration/size.
+6. Generate the README GIF from the README-layout video.
+7. Visually verify key frames and the synthetic-feed contract.
+8. Record resolution/duration/frame count/size and regenerate dependent assets.
+
+**Deliverable.** A reproducible capture script/commands, the synthetic fixture,
+the encoded artifact(s), screenshots, and a verification note.
+
+**Completion.** A clean checkout with declared dependencies produces the stated
+artifact; key frames show the expected scene, prompts, JSON, and logo; no private
+data is read; the README asset is legible at the destination width; claims match
+what the app actually did.
+
+## Reading this skill
+
+- **Invariant** — real captures, synthetic data, honest claims, canonical brand
+  source, destination-aware legibility, visual verification.
+- **Default** — Agenturm's grid sizes, duration, fps, palette, and storyboard.
+  Adapt them.
+- **Case study** — Agenturm's pinned pipeline and adaptation requirements are in
+  [`references/agenturm-pipeline.md`](references/agenturm-pipeline.md).
+
+Numbers are **example/default** or **measured** as labeled. A pixel size or
+duration is not a universal quality target.
+
 ## When to use
 
 - Recording a README/site/profile walkthrough.
@@ -66,7 +106,10 @@ Rules:
 - Use stable synthetic IDs and timestamps for reproducible captures.
 - Do not let a demo-specific shortcut bypass the real view model.
 
-## Storyboard
+## Storyboard (Agenturm example)
+
+The following is Agenturm's storyboard, not a required sequence. Adapt it to the
+questions your app can answer.
 
 | Time | On screen | Action |
 |---|---|---|
@@ -93,7 +136,11 @@ Every scene should answer a question. If a scene only shows chrome, cut it.
 9. Regenerate README/site/profile assets from the same captures.
 ```
 
-Agenturm's reproduction commands (adapt paths):
+**Historical Agenturm reproduction — not a runnable part of this skill.** The
+commands below reference Agenturm-only scripts and paths that do not exist in an
+unrelated repository. They are included as a concrete adaptation reference. See
+[`references/agenturm-pipeline.md`](references/agenturm-pipeline.md) for the
+pinned source, required tools, and what must be replaced.
 
 ```bash
 uv run --with cairosvg python scripts/build_brand_assets.py
@@ -165,6 +212,19 @@ the canonical SVG. The README capture was reduced from 148 to 100 columns so the
 text grew ~50% at GitHub's width. A later layout change added a snapshot field;
 the synthetic feed lagged, leaving the Prompts scene empty. That became a media
 regression test. The final GIF was 1600×1580, 19 s, 228 frames, 3.64 MiB.
+
+The pinned pipeline, exact commands, required fonts/tools, and adaptation
+requirements are in
+[`references/agenturm-pipeline.md`](references/agenturm-pipeline.md).
+
+## Related skills
+
+These are separate skills. Naming one here does **not** load it; use your host's
+skill-loading mechanism.
+
+- `terminal-cockpit-design` — the real UI the demo should show.
+- `textual-tui-engineering` — the capture target and its snapshot contract.
+- `tui-regression-testing` — the media/fake-feed regressions.
 
 ## Checklist
 

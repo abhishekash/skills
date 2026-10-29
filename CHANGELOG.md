@@ -1,5 +1,27 @@
 # Changelog
 
+## 1.2.0 — 2026-10-29
+
+- **Installer safety:** dry runs are non-mutating for install, replace, remove,
+  destination-root creation, files, directories, valid symlinks, and dangling
+  symlinks. Added snapshot-based regressions.
+- **Executable Textual examples:** incremental `DataTable` projection and
+  hidden/async detail examples, tested with Python 3.13.5, Textual 8.2.8, Rich
+  15.0.0. The `fill()` schematic now checks key compatibility before row heights,
+  uses a content/style/height/generation signature, records only successful
+  updates, and defines selection fallback.
+- **Portable instructions:** all nine skills now state purpose, inputs, workflow,
+  deliverable, and completion; classify guidance as invariant/default/case study;
+  label numeric limits; and explain that naming a related skill does not load it.
+- **References:** Agenturm-specific measurements, runtime observations, schema
+  choices, and media pipeline details moved to directly linked reference files.
+- **Evaluation suite:** three flagship tasks each, activation cases, independent
+  order/build/job fixtures, executable contract checks, rubrics, and a paired-run
+  harness. Comparative runs are pending; no effectiveness claim is made.
+- **Validation:** removed arbitrary length/heading-template checks; added
+  operating-contract, portability, category, packaged-resource, installed-example,
+  and evaluation-suite checks.
+
 ## 1.1.0 — 2026-10-29
 
 - Reorganized the pack into three layers: `terminal-ui` (featured),

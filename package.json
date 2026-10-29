@@ -1,7 +1,7 @@
 {
   "name": "agenturm-tui-skills",
-  "version": "1.1.0",
-  "description": "Nine production skills for designing, building, testing, and operating a truthful terminal cockpit for live agent work.",
+  "version": "1.2.0",
+  "description": "Nine focused engineering skills for designing, building, testing, and operating a truthful terminal cockpit for live agent work.",
   "type": "module",
   "private": true,
   "license": "MIT",
@@ -22,7 +22,9 @@
   "scripts": {
     "validate": "python3 scripts/validate_skills.py",
     "install:opencode": "python3 scripts/install.py --target opencode",
-    "install:claude": "python3 scripts/install.py --target claude-code"
+    "install:claude": "python3 scripts/install.py --target claude-code",
+    "test": "python3 -m unittest discover -s tests -v",
+    "validate:evals": "python3 scripts/validate_evals.py"
   },
   "pi": {
     "skills": [

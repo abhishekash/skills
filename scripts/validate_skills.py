@@ -11,7 +11,7 @@ ROOT = Path(__file__).resolve().parent.parent
 SKILLS = ROOT / "skills"
 NAME_RE = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
 ROUTING_RE = re.compile(r"\bUse (?:when|for|before|after|during)\b", re.IGNORECASE)
-REQUIRED_SECTIONS = ("## When to use", "## Checklist")
+REQUIRED_CONCEPTS = ("Purpose", "Inputs", "Workflow", "Deliverable", "Completion", "Related skills")
 FAILURE_HEADINGS = ("## Failure modes", "## Failure notes", "## Pitfalls")
 
 
@@ -46,8 +46,6 @@ def main() -> int:
         if len(relative.parts) > 2:
             errors.append(f"{path}: skills must live at skills/<name>/ or skills/<category>/<name>/")
         text = path.read_text(encoding="utf-8")
-        if len(text.strip()) < 500:
-            errors.append(f"{path}: body is too short")
         try:
             meta = parse_frontmatter(text, path)
         except ValueError as exc:
@@ -78,9 +76,14 @@ def main() -> int:
         if not quoted and " #" in description:
             errors.append(f"{path}: unquoted ' #' in description starts a YAML comment")
 
-        for section in REQUIRED_SECTIONS:
-            if section not in text:
-                errors.append(f"{path}: missing {section!r}")
+        for concept in REQUIRED_CONCEPTS:
+            if concept not in text:
+                errors.append(f"{path}: missing required concept {concept!r}")
+        for term in ("Invariant", "Default", "Case study"):
+            if term not in text:
+                errors.append(f"{path}: missing portability classification {term!r}")
+        if "Numbers" not in text:
+            errors.append(f"{path}: missing a numbers/limits note")
         if not any(heading in text for heading in FAILURE_HEADINGS):
             errors.append(f"{path}: missing a failure/pitfalls section")
 

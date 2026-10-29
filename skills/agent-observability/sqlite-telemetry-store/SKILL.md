@@ -9,6 +9,45 @@ SQLite is an excellent live store for a local monitor: embedded, transactional,
 portable, and fast for short upserts and indexed reads. It is a poor place to
 materialize every trace in Python, and it is not a secure-erasure tool.
 
+## Operating contract
+
+**Purpose.** Design or repair a local telemetry store that supports live writes,
+bounded reads, exact totals, retention, and honest completeness.
+
+**Inputs.** The record types and query patterns; expected write/read rates;
+retention policy; concurrency model; existing schema/indexes; product claims about
+totals/unknowns; backup/export needs. Profile existing queries before adding an
+engine.
+
+**Workflow.**
+
+1. Inventory writes, reads, retention, and concurrency.
+2. Choose the live store; keep analytics separate unless measured otherwise.
+3. Define keys, upserts, and the indexes matching ordered reads.
+4. Move aggregates to SQL; bound evidence and propagate completeness.
+5. Serialize derived-cache replacement with retention.
+6. Set owner-only creation and retention semantics.
+7. Add index-use, race, unknown-total, and growth tests.
+8. Report measured query numbers with their scope.
+
+**Deliverable.** A schema/index plan or patch, bounded derived queries,
+completeness semantics, retention/concurrency rules, permissions, and tests.
+
+**Completion.** Ordered pages use an index; derived refresh does not load whole
+traces into Python; unknown totals remain unknown; retention cannot be undone by
+an in-flight refresh; a new DB is owner-only; query benchmarks state their scope.
+
+## Reading this skill
+
+- **Invariant** — exact totals or explicit unknowns; bounded evidence; stable
+  identity; retention/refresh consistency; owner-only storage; no fabricated zero.
+- **Default** — Agenturm's schema, budgets, and retention choices. Adapt them.
+- **Case study** — Agenturm's exact index, budgets, and measurements are in
+  [`references/agenturm-schema.md`](references/agenturm-schema.md).
+
+Numbers are **measured**, **example/default**, or **proposed target** as labeled.
+A query microbenchmark is not end-to-end latency.
+
 ## When to use
 
 - Building a local-first store for agent runs/traces/logs/metrics.
@@ -87,7 +126,7 @@ latest error. Use SQL for exact aggregates:
 - ancestry deduplication for parent/child rollups where needed
 
 For evidence (findings, sample events, AI context), use bounded windows and
-advertise incompleteness:
+advertise incompleteness. These are Agenturm's **example/default** budgets:
 
 ```text
 256 records
@@ -210,6 +249,19 @@ window. The fix was not a rewrite: exact SQL aggregates, a new derived helper,
 bounded evidence, writer-lock serialization, owner-only creation, and index-use
 tests. DuckDB was evaluated and deliberately deferred; the live workload favored
 SQLite, and no measured analytical gain justified a second engine.
+
+The exact index, budgets, database sizes, and query measurements are in
+[`references/agenturm-schema.md`](references/agenturm-schema.md). They are a case
+study, not universal schema requirements.
+
+## Related skills
+
+These are separate skills. Naming one here does **not** load it; use your host's
+skill-loading mechanism.
+
+- `local-agent-ingestion` — normalizes the records stored here.
+- `monitoring-performance-budgets` — measures the whole system, not just SQL.
+- `tui-regression-testing` — protects index use and unknown-total behavior.
 
 ## Checklist
 

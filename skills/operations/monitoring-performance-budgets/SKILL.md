@@ -11,6 +11,43 @@ record is decoded into 100 MiB of Python objects.
 
 Measure first. Then remove work. Only then consider a faster runtime.
 
+## Operating contract
+
+**Purpose.** Diagnose and budget a local monitor's resource cost, then report it
+without overclaiming.
+
+**Inputs.** The workload and data shape; the runtime/OS/terminal; the baseline
+behavior; the benchmark harness or permission to build one; the product's
+latency/resource targets. Inspect the existing telemetry and process model first.
+
+**Workflow.**
+
+1. Separate application cost from system pressure.
+2. Find repeated work before optimizing.
+3. Build or run a whole-app benchmark with fresh processes and synthetic data.
+4. Add deterministic work budgets and regression tests.
+5. Report the measured scope, sample count, and what the benchmark does not
+   measure.
+6. Only then consider a runtime/framework rewrite.
+
+**Deliverable.** A benchmark report and/or a patch: workloads, commands, measured
+median/spread, idle CPU, peak RSS, database size, budgets, and explicit limits.
+
+**Completion.** The measurement is reproducible on a stated environment; the
+claim matches what was measured; deterministic budgets protect the work limits;
+the report names unmeasured behavior.
+
+## Reading this skill
+
+- **Invariant** — separate app cost from system pressure; measure before
+  optimizing; do not claim more than the benchmark covers.
+- **Default** — Agenturm's workloads, budgets, and thresholds. Adapt them.
+- **Case study** — Agenturm's measurements and context, with limits, are in
+  [`references/agenturm-measurements.md`](references/agenturm-measurements.md).
+
+Numbers are **measured on Agenturm's workstation**, **example/default**, or
+**proposed target**, as labeled. A number without context is not a benchmark.
+
 ## When to use
 
 - "Why is the monitor using so much CPU/RAM?"
@@ -216,12 +253,22 @@ number.
 ## Case study
 
 The user's first report was "seems my machine is overloaded". The honest answer
-was: Agenturm uses ~121 MiB and 12–39% of one core, but the machine is thrashing
-because of a Codex desktop OOM/restart cycle, browsers, and stale dev services.
-Agenturm still had real waste: the OpenCode reader rebuilt spans on any DB change,
-and the UI polled every second and updated hidden views/all cells. Removing that
-work cut Agenturm CPU by roughly two-thirds. The Rust question was answered with
-profiling, not ideology.
+was: Agenturm used a modest amount of memory but a noticeable share of one core,
+while the machine was thrashing because of a separate desktop OOM/restart cycle,
+browsers, and stale dev services. Agenturm still had real waste: the OpenCode
+reader rebuilt spans on any DB change, and the UI polled every second and updated
+hidden views/all cells. Removing that work cut Agenturm CPU by roughly
+two-thirds. The detailed measurements, context, and limits are in
+[`references/agenturm-measurements.md`](references/agenturm-measurements.md).
+
+## Related skills
+
+These are separate skills. Naming one here does **not** load it; use your host's
+skill-loading mechanism.
+
+- `sqlite-telemetry-store` — the storage work underneath the benchmark.
+- `local-agent-ingestion` — the reader work that caused the repeated scans.
+- `tui-regression-testing` — the resource-budget tests that protect the fixes.
 
 ## Checklist
 

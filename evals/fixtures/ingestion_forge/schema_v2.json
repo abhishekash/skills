@@ -1,0 +1,6 @@
+{
+  "version": 2,
+  "required": ["job_id", "step", "status"],
+  "optional": ["attempt", "elapsed_ms"],
+  "notes": "Schema v2 adds optional attempt/elapsed_ms and may omit the legacy duration_ms field. A reader must not require optional columns."
+}

@@ -7,7 +7,7 @@
 
 **Four terminal UI skills, plus five supporting layers.**
 
-Nine production skills extracted from the six-day effort to turn **Agenturm** — a
+Nine focused engineering skills extracted from the six-day effort to turn **Agenturm** — a
 local, terminal-first monitor for Codex, Claude Code, OpenCode, Pi, and
 OpenTelemetry agents — from a cluttered dashboard into a calm, evidence-first
 cockpit.
@@ -38,6 +38,9 @@ cd skills
 By default the installer **copies** each skill directory and writes a
 `.agenturm-skill` marker so `--remove` can identify what it owns. Use `--link` to
 symlink, so `git pull` updates the installed skills in place.
+
+`--dry-run` is non-mutating for every operation, including `--force` replacement
+and `--remove`; it only reads and prints the plan.
 
 | Command | Purpose |
 |---|---|
@@ -94,6 +97,9 @@ tui-regression-testing
         ↓
 terminal-demo-media
 ```
+
+Each skill links its own `references/` case study. The Textual skill also ships
+runnable `examples/` (incremental table + hidden/async detail), tested in CI.
 
 The first two are the design/implementation pair. The third is not optional: the
 Agenturm redesign looked better and silently broke the core multi-agent read. The
@@ -171,6 +177,21 @@ A typical sequence:
 - **Measure the right thing.** Component budgets are not an RSS cap; a
   microbenchmark is not the app; 12 samples are not a production p95.
 
+## What is verified
+
+Three different levels, not one claim:
+
+| Level | What is checked | Status |
+|---|---|---|
+| Packaging | Manifests, frontmatter, plugin skill paths, installer copy/link/remove, dry-run non-mutation, `npx skills` discovery | CI-checked |
+| Executable examples | Incremental `DataTable` helper and hidden/async detail example, with headless Textual tests (Python 3.13.5, Textual 8.2.8, Rich 15.0.0) | CI-checked |
+| Agent evaluations | Paired with/without-skill runs on independent fixtures, executable contract checks, blind rubric | **Suite implemented; comparative runs pending** |
+
+Packaging and example tests are **not** evidence that an agent using the skill
+produces better results. The evaluation suite and its current status are in
+[`evals/`](evals/README.md); until `evals/results/PENDING.md` is replaced with
+real runs, the effectiveness claim stays open.
+
 ## Pack layout
 
 ```text
@@ -181,29 +202,42 @@ skills/
 ├── install.sh
 ├── skills.json
 ├── package.json
+├── requirements-dev.txt
 ├── .claude-plugin/
 ├── .codex-plugin/
 ├── docs/
 │   └── agenturm-tui-retrospective.md
 ├── scripts/
 │   ├── install.py
-│   └── validate_skills.py
+│   ├── validate_skills.py
+│   └── validate_evals.py
+├── tests/
+│   ├── test_install.py
+│   └── test_packaging.py
+├── evals/
+│   ├── README.md
+│   ├── harness.py
+│   ├── tasks/
+│   ├── fixtures/
+│   ├── rubrics/
+│   ├── checks/
+│   └── results/
 └── skills/
     ├── terminal-ui/
     │   ├── README.md
-    │   ├── terminal-cockpit-design/SKILL.md
-    │   ├── textual-tui-engineering/SKILL.md
-    │   ├── tui-regression-testing/SKILL.md
-    │   └── terminal-demo-media/SKILL.md
+    │   ├── terminal-cockpit-design/{SKILL.md,references/}
+    │   ├── textual-tui-engineering/{SKILL.md,references/,examples/}
+    │   ├── tui-regression-testing/{SKILL.md,references/}
+    │   └── terminal-demo-media/{SKILL.md,references/}
     ├── agent-observability/
     │   ├── README.md
-    │   ├── agent-session-status/SKILL.md
-    │   ├── local-agent-ingestion/SKILL.md
-    │   └── sqlite-telemetry-store/SKILL.md
+    │   ├── agent-session-status/{SKILL.md,references/}
+    │   ├── local-agent-ingestion/{SKILL.md,references/}
+    │   └── sqlite-telemetry-store/{SKILL.md,references/}
     └── operations/
         ├── README.md
-        ├── monitoring-performance-budgets/SKILL.md
-        └── local-first-monitoring-privacy/SKILL.md
+        ├── monitoring-performance-budgets/{SKILL.md,references/}
+        └── local-first-monitoring-privacy/{SKILL.md,references/}
 ```
 
 The installer flattens the categories into `<target>/<skill-name>/SKILL.md`,
@@ -221,15 +255,22 @@ intentionally separate: an agent loads only the skill relevant to the task, not 
 | File | Purpose |
 |---|---|
 | `skills/<category>/<name>/SKILL.md` | The nine skills, in the portable Agent Skills format |
+| `skills/.../examples/` | Runnable, tested Textual examples shipped with the skill |
+| `skills/.../references/` | Agenturm case studies and version-specific notes |
 | `skills.json` | Manifest: version, categories, featured layer, skills, install targets |
 | `install.sh` / `scripts/install.py` | Zero-dependency installer with copy/link, target detection, dry-run, force, remove |
 | `.claude-plugin/plugin.json` | Claude Code plugin metadata |
 | `.claude-plugin/marketplace.json` | Claude Code marketplace entry (`agenturm-tui@agenturm-skills`) |
 | `.codex-plugin/plugin.json` | Codex plugin metadata and skill root |
 | `package.json` | Repo metadata, validation/install scripts, Pi skill path |
+| `requirements-dev.txt` | Pinned Textual/Rich versions for the executable examples |
 | `CHANGELOG.md` | Versioned release notes |
-| `scripts/validate_skills.py` | Frontmatter, naming, routing, links, categories, manifest consistency |
-| `.github/workflows/ci.yml` | Validation, installer smoke test, real `npx skills` discovery |
+| `scripts/validate_skills.py` | Frontmatter, naming, portability classification, links, categories, manifest consistency |
+| `scripts/validate_evals.py` | Evaluation task/fixture/rubric/activation structure |
+| `tests/test_install.py` | Installer dry-run non-mutation, copy/link/remove, snapshots |
+| `tests/test_packaging.py` | Installed relative links and runnable installed examples |
+| `evals/` | Paired evaluation prompts, independent fixtures, rubrics, harness, pending results |
+| `.github/workflows/ci.yml` | Validation, installer safety, packaged examples, real `npx skills` discovery |
 | `.github/workflows/release.yml` | Builds and attaches a clean zip on `v*` tags |
 
 ## Provenance and method
@@ -257,15 +298,26 @@ which remain unvalidated.
 ## Validation
 
 ```bash
+python3 -m pip install -r requirements-dev.txt
 python3 scripts/validate_skills.py
+python3 scripts/validate_evals.py
+python3 -m unittest discover -s tests -v
 ./install.sh --target opencode --dest /tmp/skills-smoke --dry-run
 ```
 
-The validator checks frontmatter, name/directory agreement, routing language,
-required sections, cross-skill links, category/featured metadata, manifest and
-version consistency, plugin skill lists, and target paths. CI also installs into
-a temporary directory and verifies that the real open skills CLI discovers all
-nine.
+The skill validator checks frontmatter, name/directory agreement, portability
+classification, required operating-contract concepts, cross-skill links,
+category/featured metadata, manifest and version consistency, plugin skill lists,
+and target paths. The eval validator checks the task/fixture/rubric/activation
+structure. The unittest suite checks installer dry-run non-mutation, copy/link/
+remove, installed relative links, and the installed examples. CI also verifies
+that the real open skills CLI discovers all nine.
+
+Comparative agent evaluations are **not** part of CI and have not been run. See
+`evals/results/PENDING.md`.
+
+Installer tests use temporary destinations and a temporary `HOME`; they do not
+modify the developer's real agent configuration.
 
 ## License
 

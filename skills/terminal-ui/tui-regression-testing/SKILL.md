@@ -12,6 +12,46 @@ overwritten by an old poll, or text wrapped one character per line.
 
 Test behavior, geometry, and invariants — not pixels.
 
+## Operating contract
+
+**Purpose.** Produce a test plan and regression suite that proves a TUI's core
+flow, geometry, focus, live-update races, and shutdown behavior at real terminal
+sizes.
+
+**Inputs.** The target IA and acceptance criteria; the supported sizes/themes;
+the core data flow; the test seams (fake feed, stable IDs, headless app); the
+platform/PTY support. Inspect the existing tests before adding a new harness.
+
+**Workflow.**
+
+1. Write the core-flow test in product terms before the layout change.
+2. Add semantic geometry assertions at the target sizes.
+3. Add keyboard/focus/Esc/typing tests.
+4. Add stale-response, selection, hidden-view, resize, and empty-start races.
+5. Add deterministic resource-budget tests.
+6. Add a real-PTY shutdown test when cleanup/terminal restoration is involved.
+7. Keep the demo harness on the same data contract as production.
+8. Report what was tested and what remains unverified.
+
+**Deliverable.** A test plan or patch: core-flow tests, size/theme matrix, race
+tests, budget tests, real-PTY checks, and a verification report.
+
+**Completion.** The core flow is covered at wide and compact sizes; race tests
+would fail on the known bug; shutdown exits cleanly; fake feeds match the current
+snapshot contract; unverified platform behavior is stated.
+
+## Reading this skill
+
+- **Invariant** — test the core feature, stable identity, real geometry, stale
+  evidence, clean shutdown; do not weaken a behavior assertion to fit a layout.
+- **Default** — Agenturm's size matrix, fake feed, 80×24 target, and test names.
+  Adapt them to the app.
+- **Case study** — Agenturm's exact regression list is in
+  [`references/agenturm-test-matrix.md`](references/agenturm-test-matrix.md).
+
+Numbers are **example targets** or **measured** as labeled; they are not a
+universal test matrix.
+
 ## When to use
 
 - Before and after any layout, focus, filtering, or live-update change.
@@ -81,7 +121,7 @@ Avoid brittle pixel coordinates unless the layout contract names them (e.g.
 
 ## Size and theme matrix
 
-At minimum:
+At minimum, use an example matrix like this (adapt to the app's target sizes):
 
 - **Wide:** 180×48, 160×48
 - **Standard:** 140×42, 120×40, 120×30
@@ -210,6 +250,21 @@ The demo is another client of the UI contract. Test it:
 - **Timing tests are flaky.** Assert budgets and indexes, not wall-clock p95.
 - **A layout test that only checks "things fit" misses meaning.** Assert the
   core data is still visible.
+
+## Case study
+
+Agenturm's exact regression list, sizes, and failure modes are in
+[`references/agenturm-test-matrix.md`](references/agenturm-test-matrix.md). They
+are an example suite, not a required template.
+
+## Related skills
+
+These are separate skills. Naming one here does **not** load it; use your host's
+skill-loading mechanism.
+
+- `terminal-cockpit-design` — the acceptance criteria to test.
+- `textual-tui-engineering` — the implementation patterns under test.
+- `monitoring-performance-budgets` — the resource claims the tests protect.
 
 ## Checklist
 

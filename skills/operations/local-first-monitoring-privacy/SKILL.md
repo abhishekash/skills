@@ -13,6 +13,49 @@ a privacy design.
 The goal is not zero collection. It is **explicit, bounded, inspectable
 collection** with honest labels and safe defaults.
 
+## Operating contract
+
+**Purpose.** Define the privacy boundary for a monitor that captures sensitive
+local work: what is collected, where it goes, how it is stored, who can read it,
+and what deletion does and does not mean.
+
+**Inputs.** The captured content; storage locations; receiver/network scope;
+retention policy; export/diagnostics/preferences surfaces; platform permission
+model; the product's security claims. Inspect the implementation before writing
+privacy copy.
+
+**Workflow.**
+
+1. Write the threat model and data inventory.
+2. Set the network boundary and authentication/transport assumptions.
+3. Set file permissions and storage lifetime.
+4. Define capture, redaction, metadata-only, and exclusion rules.
+5. Review diagnostics, preferences, exports, and logs for leaks.
+6. State retention honestly.
+7. Turn each boundary into a regression test.
+8. Write copy that is no stronger than the implementation.
+
+**Deliverable.** A privacy boundary with data inventory, network/storage rules,
+capture/exclusion policy, surface-by-surface rules, retention semantics, test
+matrix, and user-facing copy.
+
+**Completion.** Secrets do not appear in preferences, diagnostics, or exports;
+owner-only files are created correctly; metadata-only behavior is stated
+truthfully; retention does not imply secure erasure; every claim matches a test.
+
+## Reading this skill
+
+- **Invariant** — explicit collection, least privilege, owner-only storage,
+  content-free diagnostics, no secret leaks, honest retention.
+- **Default** — loopback, 0600/0700 modes, allowlisted preferences, previewed
+  exports. Adapt to the platform and product.
+- **Case study** — Agenturm's exact preference allowlist, content caps, export
+  flow, and retention copy are in
+  [`references/agenturm-privacy.md`](references/agenturm-privacy.md).
+
+Numbers are **example/default** or **measured** as labeled. Do not present a
+default as a compliance guarantee.
+
 ## When to use
 
 - Capturing native agent sessions or OTLP telemetry.
@@ -217,8 +260,21 @@ they came from review findings: a database created under a permissive umask, a
 diagnostics screen that could leak, preferences that could have stored searches,
 and an export that could overwrite a file. Each became a regression test.
 
+The exact allowlist, caps, and copy are in
+[`references/agenturm-privacy.md`](references/agenturm-privacy.md). They are a
+concrete implementation, not a universal policy.
+
 The UI copy follows the same rule: never imply more certainty or safety than the
 implementation provides.
+
+## Related skills
+
+These are separate skills. Naming one here does **not** load it; use your host's
+skill-loading mechanism.
+
+- `local-agent-ingestion` — where capture and redaction happen.
+- `sqlite-telemetry-store` — storage permissions and retention.
+- `terminal-cockpit-design` — how diagnostics/exports are presented.
 
 ## Checklist
 

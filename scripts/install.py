@@ -92,19 +92,37 @@ def remove_destination(destination: Path, force: bool) -> bool:
 def install_skill(source: Path, destination: Path, *, link: bool, force: bool, dry_run: bool) -> str:
     if not source.is_dir() or not (source / "SKILL.md").is_file():
         return f"skip (missing {source / 'SKILL.md'})"
-    if destination.exists() or destination.is_symlink():
-        if is_ours(destination) and link:
-            want = source.resolve()
-            if destination.resolve() == want:
-                return "already installed"
+
+    if destination.is_symlink():
+        kind = "symlink"
+    elif destination.is_file():
+        kind = "file"
+    elif destination.is_dir():
+        kind = "directory"
+    else:
+        kind = "missing"
+
+    if kind != "missing":
+        if link and kind == "symlink" and is_ours(destination):
+            try:
+                if destination.resolve() == source.resolve():
+                    return "already installed"
+            except OSError:
+                pass
         if not force:
             return "skipped (exists; use --force to update)"
-        if not remove_destination(destination, force=True):
-            return "exists (not owned; refusing)"
+        action = "replace"
+    else:
+        action = "install"
+
     if dry_run:
-        return f"would {'link' if link else 'copy'} -> {destination}"
-    destination.parent.mkdir(parents=True, exist_ok=True)
+        return f"would {action} ({'link' if link else 'copy'}) -> {destination}"
+
+    if kind != "missing" and not remove_destination(destination, force=True):
+        return "failed: could not replace existing destination"
+
     try:
+        destination.parent.mkdir(parents=True, exist_ok=True)
         if link:
             os.symlink(source.resolve(), destination, target_is_directory=True)
         else:
@@ -114,6 +132,14 @@ def install_skill(source: Path, destination: Path, *, link: bool, force: bool, d
                 encoding="utf-8",
             )
     except OSError as exc:
+        # Never leave a partial copy that could be mistaken for a complete skill.
+        try:
+            if destination.is_symlink() or destination.is_file():
+                destination.unlink(missing_ok=True)
+            elif destination.is_dir():
+                shutil.rmtree(destination, ignore_errors=True)
+        except OSError:
+            pass
         return f"failed: {exc}"
     return "linked" if link else "copied"
 
@@ -122,7 +148,7 @@ def remove_skill(destination: Path, *, force: bool, dry_run: bool) -> str:
     if not destination.exists() and not destination.is_symlink():
         return "not installed"
     if not force and not is_ours(destination):
-        return "not a managed symlink (use --force)"
+        return "skipped (not managed; use --force)"
     if dry_run:
         return f"would remove {destination}"
     try:

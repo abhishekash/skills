@@ -1,7 +1,7 @@
 {
   "name": "agenturm-tui-skills",
-  "version": "1.1.0",
-  "description": "Nine production skills for designing, building, testing, and operating a truthful terminal cockpit for live agent work.",
+  "version": "1.2.0",
+  "description": "Nine focused engineering skills for designing, building, testing, and operating a truthful terminal cockpit for live agent work.",
   "license": "MIT",
   "repository": "https://github.com/abhishekash/skills",
   "homepage": "https://github.com/abhishekash/skills",
@@ -30,7 +30,12 @@
       "category": "terminal-ui",
       "featured": true,
       "description": "Design a keyboard-first terminal cockpit: IA, responsive layout, evidence-based status, attention, and acceptance criteria.",
-      "tags": ["tui", "ux", "design", "observability"]
+      "tags": [
+        "tui",
+        "ux",
+        "design",
+        "observability"
+      ]
     },
     {
       "name": "textual-tui-engineering",
@@ -38,7 +43,12 @@
       "category": "terminal-ui",
       "featured": true,
       "description": "Implement the cockpit in Textual: DataTable projection, lazy views, stale-scope rejection, reflow, and shutdown.",
-      "tags": ["textual", "python", "tui", "engineering"]
+      "tags": [
+        "textual",
+        "python",
+        "tui",
+        "engineering"
+      ]
     },
     {
       "name": "tui-regression-testing",
@@ -46,7 +56,12 @@
       "category": "terminal-ui",
       "featured": true,
       "description": "Test TUIs without trusting screenshots: headless Pilot tests, core-flow regressions, race matrices, real PTY.",
-      "tags": ["testing", "tui", "textual", "regression"]
+      "tags": [
+        "testing",
+        "tui",
+        "textual",
+        "regression"
+      ]
     },
     {
       "name": "terminal-demo-media",
@@ -54,7 +69,12 @@
       "category": "terminal-ui",
       "featured": true,
       "description": "Produce honest, legible terminal demo media from real captures: README sizing, synthetic data, visual QA.",
-      "tags": ["media", "demo", "gif", "release"]
+      "tags": [
+        "media",
+        "demo",
+        "gif",
+        "release"
+      ]
     },
     {
       "name": "agent-session-status",
@@ -62,7 +82,12 @@
       "category": "agent-observability",
       "featured": false,
       "description": "Classify agent state from evidence: working, quiet, waiting, stalled, finished, or unknown.",
-      "tags": ["agents", "status", "observability", "attention"]
+      "tags": [
+        "agents",
+        "status",
+        "observability",
+        "attention"
+      ]
     },
     {
       "name": "local-agent-ingestion",
@@ -70,7 +95,12 @@
       "category": "agent-observability",
       "featured": false,
       "description": "Read local agent logs/databases with byte budgets, fair resumption, schema drift, and content-free diagnostics.",
-      "tags": ["ingestion", "agents", "local-first", "sqlite"]
+      "tags": [
+        "ingestion",
+        "agents",
+        "local-first",
+        "sqlite"
+      ]
     },
     {
       "name": "sqlite-telemetry-store",
@@ -78,7 +108,12 @@
       "category": "agent-observability",
       "featured": false,
       "description": "Store live agent telemetry in SQLite: indexes, bounded derived data, writer locks, retention, DuckDB decision.",
-      "tags": ["sqlite", "storage", "telemetry", "performance"]
+      "tags": [
+        "sqlite",
+        "storage",
+        "telemetry",
+        "performance"
+      ]
     },
     {
       "name": "monitoring-performance-budgets",
@@ -86,7 +121,12 @@
       "category": "operations",
       "featured": false,
       "description": "Benchmark and budget a local monitor: whole-app workloads, deterministic limits, honest resource claims.",
-      "tags": ["performance", "benchmark", "monitoring", "resources"]
+      "tags": [
+        "performance",
+        "benchmark",
+        "monitoring",
+        "resources"
+      ]
     },
     {
       "name": "local-first-monitoring-privacy",
@@ -94,7 +134,12 @@
       "category": "operations",
       "featured": false,
       "description": "Design capture, diagnostics, preferences, exports, and retention for a monitor that sees sensitive work.",
-      "tags": ["privacy", "security", "local-first", "monitoring"]
+      "tags": [
+        "privacy",
+        "security",
+        "local-first",
+        "monitoring"
+      ]
     }
   ],
   "targets": {
