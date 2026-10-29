@@ -22,10 +22,12 @@ jobs:
           python3 -m py_compile scripts/install.py scripts/validate_skills.py
       - name: Build skill pack
         run: |
+          find . -type d -name __pycache__ -prune -exec rm -rf {} +
           mkdir -p dist
           zip -r "dist/agenturm-tui-skills-${GITHUB_REF_NAME}.zip" \
             skills README.md LICENSE CHANGELOG.md skills.json install.sh scripts \
-            .claude-plugin .codex-plugin package.json
+            .claude-plugin .codex-plugin package.json \
+            -x '*/__pycache__/*' '*.pyc'
       - name: Publish release
         env:
           GH_TOKEN: ${{ github.token }}
