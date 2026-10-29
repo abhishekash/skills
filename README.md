@@ -62,10 +62,11 @@ Codex plugin metadata is included at `.codex-plugin/plugin.json`; use your Codex
 plugin/marketplace flow, or install directly to the shared `~/.agents/skills`
 directory with the installer.
 
-Manual fallback:
+Manual fallback (copies each skill directory, not the category READMEs):
 
 ```bash
-cp -r skills/terminal-ui/* skills/agent-observability/* skills/operations/* ~/.config/opencode/skills/
+find skills -mindepth 2 -maxdepth 2 -type d \
+  -exec cp -r {} ~/.config/opencode/skills/ \;
 ```
 
 Restart the agent after installing so it discovers the new skills.
