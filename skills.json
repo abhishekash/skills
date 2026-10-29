@@ -1,64 +1,100 @@
 {
   "name": "agenturm-tui-skills",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Nine production skills for designing, building, testing, and operating a truthful terminal cockpit for live agent work.",
   "license": "MIT",
   "repository": "https://github.com/abhishekash/skills",
   "homepage": "https://github.com/abhishekash/skills",
+  "featured": "terminal-ui",
+  "categories": [
+    {
+      "id": "terminal-ui",
+      "name": "Terminal UI",
+      "description": "Design it, build it, test it, and show it."
+    },
+    {
+      "id": "agent-observability",
+      "name": "Agent truth and data",
+      "description": "Make the UI's claims about agent state and evidence true."
+    },
+    {
+      "id": "operations",
+      "name": "Operations",
+      "description": "Keep the monitor affordable and private."
+    }
+  ],
   "skills": [
     {
       "name": "terminal-cockpit-design",
-      "path": "skills/terminal-cockpit-design",
+      "path": "skills/terminal-ui/terminal-cockpit-design",
+      "category": "terminal-ui",
+      "featured": true,
       "description": "Design a keyboard-first terminal cockpit: IA, responsive layout, evidence-based status, attention, and acceptance criteria.",
       "tags": ["tui", "ux", "design", "observability"]
     },
     {
       "name": "textual-tui-engineering",
-      "path": "skills/textual-tui-engineering",
+      "path": "skills/terminal-ui/textual-tui-engineering",
+      "category": "terminal-ui",
+      "featured": true,
       "description": "Implement the cockpit in Textual: DataTable projection, lazy views, stale-scope rejection, reflow, and shutdown.",
       "tags": ["textual", "python", "tui", "engineering"]
     },
     {
       "name": "tui-regression-testing",
-      "path": "skills/tui-regression-testing",
+      "path": "skills/terminal-ui/tui-regression-testing",
+      "category": "terminal-ui",
+      "featured": true,
       "description": "Test TUIs without trusting screenshots: headless Pilot tests, core-flow regressions, race matrices, real PTY.",
       "tags": ["testing", "tui", "textual", "regression"]
     },
     {
+      "name": "terminal-demo-media",
+      "path": "skills/terminal-ui/terminal-demo-media",
+      "category": "terminal-ui",
+      "featured": true,
+      "description": "Produce honest, legible terminal demo media from real captures: README sizing, synthetic data, visual QA.",
+      "tags": ["media", "demo", "gif", "release"]
+    },
+    {
       "name": "agent-session-status",
-      "path": "skills/agent-session-status",
+      "path": "skills/agent-observability/agent-session-status",
+      "category": "agent-observability",
+      "featured": false,
       "description": "Classify agent state from evidence: working, quiet, waiting, stalled, finished, or unknown.",
       "tags": ["agents", "status", "observability", "attention"]
     },
     {
       "name": "local-agent-ingestion",
-      "path": "skills/local-agent-ingestion",
+      "path": "skills/agent-observability/local-agent-ingestion",
+      "category": "agent-observability",
+      "featured": false,
       "description": "Read local agent logs/databases with byte budgets, fair resumption, schema drift, and content-free diagnostics.",
       "tags": ["ingestion", "agents", "local-first", "sqlite"]
     },
     {
       "name": "sqlite-telemetry-store",
-      "path": "skills/sqlite-telemetry-store",
+      "path": "skills/agent-observability/sqlite-telemetry-store",
+      "category": "agent-observability",
+      "featured": false,
       "description": "Store live agent telemetry in SQLite: indexes, bounded derived data, writer locks, retention, DuckDB decision.",
       "tags": ["sqlite", "storage", "telemetry", "performance"]
     },
     {
       "name": "monitoring-performance-budgets",
-      "path": "skills/monitoring-performance-budgets",
+      "path": "skills/operations/monitoring-performance-budgets",
+      "category": "operations",
+      "featured": false,
       "description": "Benchmark and budget a local monitor: whole-app workloads, deterministic limits, honest resource claims.",
       "tags": ["performance", "benchmark", "monitoring", "resources"]
     },
     {
       "name": "local-first-monitoring-privacy",
-      "path": "skills/local-first-monitoring-privacy",
+      "path": "skills/operations/local-first-monitoring-privacy",
+      "category": "operations",
+      "featured": false,
       "description": "Design capture, diagnostics, preferences, exports, and retention for a monitor that sees sensitive work.",
       "tags": ["privacy", "security", "local-first", "monitoring"]
-    },
-    {
-      "name": "terminal-demo-media",
-      "path": "skills/terminal-demo-media",
-      "description": "Produce honest, legible terminal demo media from real captures: README sizing, synthetic data, visual QA.",
-      "tags": ["media", "demo", "gif", "release"]
     }
   ],
   "targets": {

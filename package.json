@@ -1,6 +1,6 @@
 {
   "name": "agenturm-tui-skills",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Nine production skills for designing, building, testing, and operating a truthful terminal cockpit for live agent work.",
   "type": "module",
   "private": true,

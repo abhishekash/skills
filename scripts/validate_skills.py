@@ -35,16 +35,16 @@ def parse_frontmatter(text: str, path: Path) -> dict[str, str]:
 
 def main() -> int:
     errors: list[str] = []
-    skill_dirs = sorted(path for path in SKILLS.iterdir() if path.is_dir())
-    if not skill_dirs:
+    skill_files = sorted(SKILLS.rglob("SKILL.md"))
+    if not skill_files:
         errors.append("no skill directories found")
 
     names: dict[str, Path] = {}
-    for directory in skill_dirs:
-        path = directory / "SKILL.md"
-        if not path.is_file():
-            errors.append(f"{directory}: missing SKILL.md")
-            continue
+    for path in skill_files:
+        directory = path.parent
+        relative = directory.relative_to(SKILLS)
+        if len(relative.parts) > 2:
+            errors.append(f"{path}: skills must live at skills/<name>/ or skills/<category>/<name>/")
         text = path.read_text(encoding="utf-8")
         if len(text.strip()) < 500:
             errors.append(f"{path}: body is too short")
@@ -94,7 +94,7 @@ def main() -> int:
 
     readme = (ROOT / "README.md").read_text(encoding="utf-8")
     for name in names:
-        if f"skills/{name}/SKILL.md" not in readme:
+        if f"/{name}/SKILL.md" not in readme:
             errors.append(f"README.md: missing table entry for {name}")
 
     def load_json(relative: str) -> dict:
@@ -131,6 +131,11 @@ def main() -> int:
     declared_names = [item.get("name") for item in declared if isinstance(item, dict)]
     if sorted(declared_names) != sorted(names):
         errors.append(f"skills.json: skills {declared_names} do not match directories {sorted(names)}")
+    categories = manifest.get("categories", [])
+    category_ids = [item.get("id") for item in categories if isinstance(item, dict)]
+    if manifest.get("featured") not in category_ids:
+        errors.append("skills.json: featured category is not declared")
+    used_categories: set[str] = set()
     for item in declared:
         if not isinstance(item, dict):
             errors.append("skills.json: every skill entry must be an object")
@@ -140,6 +145,16 @@ def main() -> int:
             errors.append(f"skills.json: missing path {path!r}")
         if not item.get("description"):
             errors.append(f"skills.json: {item.get('name')} missing description")
+        category = item.get("category")
+        if category not in category_ids:
+            errors.append(f"skills.json: {item.get('name')} has unknown category {category!r}")
+        else:
+            used_categories.add(category)
+        if not isinstance(item.get("featured"), bool):
+            errors.append(f"skills.json: {item.get('name')} must declare featured: true/false")
+    for category in category_ids:
+        if category not in used_categories:
+            errors.append(f"skills.json: category {category!r} has no skills")
 
     targets = manifest.get("targets", {})
     if not targets:

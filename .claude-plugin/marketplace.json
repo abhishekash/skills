@@ -6,28 +6,28 @@
   },
   "metadata": {
     "description": "Nine focused skills extracted from the Agenturm terminal-cockpit effort.",
-    "version": "1.0.0"
+    "version": "1.1.0"
   },
   "plugins": [
     {
       "name": "agenturm-tui",
       "description": "Design, build, test, and operate a truthful terminal cockpit for live agent work.",
-      "version": "1.0.0",
+      "version": "1.1.0",
       "source": "./",
       "author": {
         "name": "abhishekash"
       },
       "strict": false,
       "skills": [
-        "./skills/terminal-cockpit-design",
-        "./skills/textual-tui-engineering",
-        "./skills/tui-regression-testing",
-        "./skills/agent-session-status",
-        "./skills/local-agent-ingestion",
-        "./skills/sqlite-telemetry-store",
-        "./skills/monitoring-performance-budgets",
-        "./skills/local-first-monitoring-privacy",
-        "./skills/terminal-demo-media"
+        "./skills/terminal-ui/terminal-cockpit-design",
+        "./skills/terminal-ui/textual-tui-engineering",
+        "./skills/terminal-ui/tui-regression-testing",
+        "./skills/terminal-ui/terminal-demo-media",
+        "./skills/agent-observability/agent-session-status",
+        "./skills/agent-observability/local-agent-ingestion",
+        "./skills/agent-observability/sqlite-telemetry-store",
+        "./skills/operations/monitoring-performance-budgets",
+        "./skills/operations/local-first-monitoring-privacy"
       ]
     }
   ]

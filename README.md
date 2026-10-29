@@ -3,24 +3,24 @@
 [![CI](https://github.com/abhishekash/skills/actions/workflows/ci.yml/badge.svg)](https://github.com/abhishekash/skills/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Skills: 9](https://img.shields.io/badge/skills-9-ffbd69)](skills)
+[![Terminal UI: 4](https://img.shields.io/badge/terminal%20UI-4-dceb5a)](skills/terminal-ui)
+
+**Four terminal UI skills, plus five supporting layers.**
 
 Nine production skills extracted from the six-day effort to turn **Agenturm** — a
 local, terminal-first monitor for Codex, Claude Code, OpenCode, Pi, and
 OpenTelemetry agents — from a cluttered dashboard into a calm, evidence-first
 cockpit.
 
-These are not generic "write a TUI" notes. They encode the specific failures,
-reversals, measurements, tests, and design rules that came out of the work:
-stale filters, false stall labels, hidden-pane reflow bugs, a logo that ate the
-screen, a 25%-header change that was misunderstood, and a layout refactor that
-silently broke the product's core feature.
+The terminal UI is the point of this pack. The other skills exist to make what
+the UI says **true**, affordable, and private.
 
 The full story, including what failed and why, is in
 **[docs/agenturm-tui-retrospective.md](docs/agenturm-tui-retrospective.md)**.
 
 ## Install
 
-The fastest path, for any harness supported by the open skills CLI:
+Fastest path, for any harness supported by the open skills CLI:
 
 ```bash
 npx skills add abhishekash/skills
@@ -65,40 +65,79 @@ directory with the installer.
 Manual fallback:
 
 ```bash
-cp -r skills/* ~/.config/opencode/skills/
+cp -r skills/terminal-ui/* skills/agent-observability/* skills/operations/* ~/.config/opencode/skills/
 ```
 
 Restart the agent after installing so it discovers the new skills.
 
-## The skills
+## Terminal UI
 
-| Skill | Use when |
+> **Start here if you are building a TUI.** These four skills cover the whole
+> loop: design it, build it, test it, show it.
+
+| Skill | What it gives you |
 |---|---|
-| [terminal-cockpit-design](skills/terminal-cockpit-design/SKILL.md) | Designing or redesigning a keyboard-first TUI for live operational data: information hierarchy, status language, responsive layout, trust, and acceptance criteria |
-| [textual-tui-engineering](skills/textual-tui-engineering/SKILL.md) | Implementing the cockpit in Textual: composition, `DataTable` projection, lazy views, stale-response invalidation, selection preservation, inspector reflow, shutdown |
-| [tui-regression-testing](skills/tui-regression-testing/SKILL.md) | Testing a TUI without trusting screenshots: headless Pilot tests, core-flow regressions, resize/keyboard/race matrices, real-PTY shutdown tests |
-| [agent-session-status](skills/agent-session-status/SKILL.md) | Showing whether agent sessions are working, waiting, stalled, finished, or unknown without inventing state from silence |
-| [local-agent-ingestion](skills/local-agent-ingestion/SKILL.md) | Tailing local agent logs and reading agent databases safely: byte budgets, fair resumption, schema drift, content-free diagnostics |
-| [sqlite-telemetry-store](skills/sqlite-telemetry-store/SKILL.md) | Storing live agent telemetry in SQLite: indexes, incremental derived data, exact aggregates, retention, and when not to add DuckDB |
-| [monitoring-performance-budgets](skills/monitoring-performance-budgets/SKILL.md) | A local monitor feels heavy: whole-app benchmarks, deterministic budgets, and honest resource reporting before considering a rewrite |
-| [local-first-monitoring-privacy](skills/local-first-monitoring-privacy/SKILL.md) | Designing capture, diagnostics, preferences, exports, and retention for a local monitor that sees prompts, tool output, and secrets |
-| [terminal-demo-media](skills/terminal-demo-media/SKILL.md) | Producing an honest README/site/profile demo GIF or MP4 from the real TUI, including legibility and synthetic-data checks |
+| **[terminal-cockpit-design](skills/terminal-ui/terminal-cockpit-design/SKILL.md)** | The product and UX contract: three-row shell, task-first rows, a summary inspector, evidence-based status, attention that can be cleared, responsive breakpoints, keyboard model, and acceptance criteria. |
+| **[textual-tui-engineering](skills/terminal-ui/textual-tui-engineering/SKILL.md)** | The Textual implementation: `DataTable` projection, lazy tabs, stale-scope rejection, selection preservation, inspector reflow, evidence rendering, theme changes, and interrupt-safe shutdown. |
+| **[tui-regression-testing](skills/terminal-ui/tui-regression-testing/SKILL.md)** | How to trust a TUI: core-flow tests, geometry assertions at real terminal sizes, keyboard/focus matrices, race tests, resource budgets, real-PTY shutdown, and demo-media checks. |
+| **[terminal-demo-media](skills/terminal-ui/terminal-demo-media/SKILL.md)** | How to show it honestly: real captures, synthetic data, GitHub-legible sizing, canonical logo rendering, reproducible storyboards, and visual QA. |
 
-## How they fit together
+Suggested order:
 
 ```text
-terminal-cockpit-design        product + UX contract
-        │
-        ├── textual-tui-engineering     implementation
-        │           │
-        │           └── tui-regression-testing
-        │
-        ├── agent-session-status        truth about session state
-        ├── local-agent-ingestion       bounded data acquisition
-        ├── sqlite-telemetry-store      durable local state
-        ├── monitoring-performance-budgets
-        ├── local-first-monitoring-privacy
-        └── terminal-demo-media         honest release artifacts
+terminal-cockpit-design
+        ↓
+textual-tui-engineering
+        ↓
+tui-regression-testing
+        ↓
+terminal-demo-media
+```
+
+The first two are the design/implementation pair. The third is not optional: the
+Agenturm redesign looked better and silently broke the core multi-agent read. The
+fourth is how the demo stays honest after the layout changes.
+
+## Supporting layers
+
+These make the terminal UI truthful, affordable, and private.
+
+### Agent truth and data
+
+The UI can only show what the reader and classifier can prove.
+
+| Skill | What it gives you |
+|---|---|
+| **[agent-session-status](skills/agent-observability/agent-session-status/SKILL.md)** | Working vs quiet work vs waiting vs possible stall vs unconfirmed vs collector delay. Never infer a stall from silence; every attention item has a cause, next step, review, and dismiss. |
+| **[local-agent-ingestion](skills/agent-observability/local-agent-ingestion/SKILL.md)** | Safe local readers: byte budgets before decode, fair resumption, oversized-record handling, deep-JSON containment, schema drift, parentless OpenCode sessions, and content-free diagnostics. |
+| **[sqlite-telemetry-store](skills/agent-observability/sqlite-telemetry-store/SKILL.md)** | SQLite for live telemetry: indexes, exact aggregates, bounded evidence with completeness flags, incremental caches, writer-lock retention, and when DuckDB is not justified. |
+
+### Operations
+
+The monitor has to earn its place on the machine and respect what it sees.
+
+| Skill | What it gives you |
+|---|---|
+| **[monitoring-performance-budgets](skills/operations/monitoring-performance-budgets/SKILL.md)** | Whole-app benchmarks, deterministic work limits, idle CPU/RSS/database reporting, and an honest answer to "should we rewrite it in Rust?" |
+| **[local-first-monitoring-privacy](skills/operations/local-first-monitoring-privacy/SKILL.md)** | Loopback boundaries, owner-only files, redaction, metadata-only capture, allowlisted preferences, content-free diagnostics, previewed exports, and retention that admits it is logical deletion. |
+
+## How the pack fits together
+
+```text
+TERMINAL UI
+  terminal-cockpit-design      what the user sees and decides
+  textual-tui-engineering      how it is built
+  tui-regression-testing       how it stays correct
+  terminal-demo-media          how it is shown
+
+AGENT TRUTH AND DATA
+  agent-session-status         what state can be claimed
+  local-agent-ingestion        what evidence can be read
+  sqlite-telemetry-store       what evidence can be kept
+
+OPERATIONS
+  monitoring-performance-budgets   what it costs
+  local-first-monitoring-privacy   what it must not leak
 ```
 
 A typical sequence:
@@ -109,12 +148,13 @@ A typical sequence:
    live-update path.
 3. Add **tui-regression-testing** from the first vertical slice — especially the
    core-flow test (all running agents + prompts + activity + MCP).
-4. Use **agent-session-status**, **local-agent-ingestion**, **sqlite-telemetry-store**,
-   and **local-first-monitoring-privacy** for the data and truth layer.
-5. Use **monitoring-performance-budgets** before optimizing or rewriting.
+4. Use **agent-session-status**, **local-agent-ingestion**, and
+   **sqlite-telemetry-store** for the data and truth layer.
+5. Use **monitoring-performance-budgets** and
+   **local-first-monitoring-privacy** before shipping.
 6. Use **terminal-demo-media** only after the real UI is worth recording.
 
-## What these skills optimize for
+## What the pack optimizes for
 
 - **Truth over polish.** A status is a claim about evidence. Silence is not a
   stall; a poll success is not a new record; an unknown cost is not `$0`.
@@ -130,23 +170,7 @@ A typical sequence:
 - **Measure the right thing.** Component budgets are not an RSS cap; a
   microbenchmark is not the app; 12 samples are not a production p95.
 
-## Packaging
-
-The repository is a complete skill pack, not just a folder of markdown:
-
-| File | Purpose |
-|---|---|
-| `skills/<name>/SKILL.md` | The nine skills, in the portable Agent Skills format |
-| `skills.json` | Machine-readable manifest: version, skills, descriptions, tags, install targets |
-| `install.sh` / `scripts/install.py` | Zero-dependency installer with copy/link, target detection, dry-run, force, remove |
-| `.claude-plugin/plugin.json` | Claude Code plugin metadata |
-| `.claude-plugin/marketplace.json` | Claude Code marketplace entry (`agenturm-tui@agenturm-skills`) |
-| `.codex-plugin/plugin.json` | Codex plugin metadata and skill root |
-| `package.json` | Repo metadata, validation/install scripts, Pi skill path |
-| `CHANGELOG.md` | Versioned release notes |
-| `scripts/validate_skills.py` | Frontmatter, naming, routing, links, manifest consistency |
-| `.github/workflows/ci.yml` | Validation + installer smoke test |
-| `.github/workflows/release.yml` | Builds and attaches a zip on `v*` tags |
+## Pack layout
 
 ```text
 skills/
@@ -164,21 +188,48 @@ skills/
 │   ├── install.py
 │   └── validate_skills.py
 └── skills/
-    ├── terminal-cockpit-design/SKILL.md
-    ├── textual-tui-engineering/SKILL.md
-    ├── tui-regression-testing/SKILL.md
-    ├── agent-session-status/SKILL.md
-    ├── local-agent-ingestion/SKILL.md
-    ├── sqlite-telemetry-store/SKILL.md
-    ├── monitoring-performance-budgets/SKILL.md
-    ├── local-first-monitoring-privacy/SKILL.md
-    └── terminal-demo-media/SKILL.md
+    ├── terminal-ui/
+    │   ├── README.md
+    │   ├── terminal-cockpit-design/SKILL.md
+    │   ├── textual-tui-engineering/SKILL.md
+    │   ├── tui-regression-testing/SKILL.md
+    │   └── terminal-demo-media/SKILL.md
+    ├── agent-observability/
+    │   ├── README.md
+    │   ├── agent-session-status/SKILL.md
+    │   ├── local-agent-ingestion/SKILL.md
+    │   └── sqlite-telemetry-store/SKILL.md
+    └── operations/
+        ├── README.md
+        ├── monitoring-performance-budgets/SKILL.md
+        └── local-first-monitoring-privacy/SKILL.md
 ```
+
+The installer flattens the categories into `<target>/<skill-name>/SKILL.md`,
+because most agents expect a flat skills directory. The repository keeps the
+categories for browsing; `skills.json` is the source of truth for paths and
+featured status.
 
 Each skill has flat `name` / `description` frontmatter written as a routing
 trigger, so progressive disclosure works across harnesses. The nine skills are
 intentionally separate: an agent loads only the skill relevant to the task, not a
 3,000-line monolith.
+
+## Packaging
+
+| File | Purpose |
+|---|---|
+| `skills/<category>/<name>/SKILL.md` | The nine skills, in the portable Agent Skills format |
+| `skills.json` | Manifest: version, categories, featured layer, skills, install targets |
+| `install.sh` / `scripts/install.py` | Zero-dependency installer with copy/link, target detection, dry-run, force, remove |
+| `.claude-plugin/plugin.json` | Claude Code plugin metadata |
+| `.claude-plugin/marketplace.json` | Claude Code marketplace entry (`agenturm-tui@agenturm-skills`) |
+| `.codex-plugin/plugin.json` | Codex plugin metadata and skill root |
+| `package.json` | Repo metadata, validation/install scripts, Pi skill path |
+| `CHANGELOG.md` | Versioned release notes |
+| `scripts/validate_skills.py` | Frontmatter, naming, routing, links, categories, manifest consistency |
+| `.github/workflows/ci.yml` | Validation, installer smoke test, real `npx skills` discovery |
+| `.github/workflows/release.yml` | Builds and attaches a clean zip on `v*` tags |
 
 ## Provenance and method
 
@@ -210,9 +261,10 @@ python3 scripts/validate_skills.py
 ```
 
 The validator checks frontmatter, name/directory agreement, routing language,
-required sections, cross-skill links, manifest/version consistency, plugin skill
-lists, and target paths. CI also installs into a temporary directory and checks
-that all nine `SKILL.md` files arrive.
+required sections, cross-skill links, category/featured metadata, manifest and
+version consistency, plugin skill lists, and target paths. CI also installs into
+a temporary directory and verifies that the real open skills CLI discovers all
+nine.
 
 ## License
 

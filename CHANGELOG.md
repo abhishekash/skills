@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.1.0 — 2026-10-29
+
+- Reorganized the pack into three layers: `terminal-ui` (featured),
+  `agent-observability` (truth and data), and `operations` (performance and
+  privacy).
+- Added category/featured metadata to `skills.json`.
+- Updated Claude marketplace and plugin skill paths for the categorized layout.
+- Kept installed skills flat (`<target>/<skill-name>/SKILL.md`) for compatibility.
+
 ## 1.0.0 — 2026-10-29
 
 - Initial release extracted from the Agenturm terminal-cockpit effort.
