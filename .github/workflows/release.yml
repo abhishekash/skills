@@ -1,0 +1,36 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  package:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - name: Validate
+        run: |
+          python3 scripts/validate_skills.py
+          python3 -m py_compile scripts/install.py scripts/validate_skills.py
+      - name: Build skill pack
+        run: |
+          mkdir -p dist
+          zip -r "dist/agenturm-tui-skills-${GITHUB_REF_NAME}.zip" \
+            skills README.md LICENSE CHANGELOG.md skills.json install.sh scripts \
+            .claude-plugin .codex-plugin package.json
+      - name: Publish release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "$GITHUB_REF_NAME" \
+            "dist/agenturm-tui-skills-${GITHUB_REF_NAME}.zip" \
+            --title "Agenturm TUI skills ${GITHUB_REF_NAME}" \
+            --generate-notes

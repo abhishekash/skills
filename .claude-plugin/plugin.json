@@ -1,0 +1,19 @@
+{
+  "name": "agenturm-tui",
+  "description": "Nine production skills for designing, building, testing, and operating a truthful terminal cockpit for live agent work.",
+  "version": "1.0.0",
+  "author": {
+    "name": "abhishekash"
+  },
+  "homepage": "https://github.com/abhishekash/skills",
+  "repository": "https://github.com/abhishekash/skills",
+  "license": "MIT",
+  "keywords": [
+    "agent-skills",
+    "tui",
+    "terminal",
+    "textual",
+    "observability",
+    "agents"
+  ]
+}

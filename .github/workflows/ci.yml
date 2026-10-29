@@ -17,3 +17,22 @@ jobs:
           python-version: "3.12"
       - name: Validate skills
         run: python3 scripts/validate_skills.py
+      - name: Validate installer and packaging
+        run: |
+          chmod +x install.sh scripts/install.py
+          ./install.sh --list
+          ./install.sh --target opencode --dest /tmp/skills-smoke --copy
+          test -f /tmp/skills-smoke/terminal-cockpit-design/SKILL.md
+          test -f /tmp/skills-smoke/terminal-cockpit-design/.agenturm-skill
+          test -f /tmp/skills-smoke/terminal-demo-media/SKILL.md
+          test "$(find /tmp/skills-smoke -name SKILL.md | wc -l)" -eq 9
+          ./install.sh --target opencode --dest /tmp/skills-smoke --copy --force
+          ./install.sh --target opencode --dest /tmp/skills-smoke --remove
+          test -z "$(find /tmp/skills-smoke -name SKILL.md -print -quit)"
+      - name: Check JSON manifests
+        run: |
+          python3 -m json.tool skills.json >/dev/null
+          python3 -m json.tool package.json >/dev/null
+          python3 -m json.tool .claude-plugin/plugin.json >/dev/null
+          python3 -m json.tool .claude-plugin/marketplace.json >/dev/null
+          python3 -m json.tool .codex-plugin/plugin.json >/dev/null

@@ -1,0 +1,34 @@
+{
+  "name": "agenturm-skills",
+  "description": "Agenturm TUI engineering skills for terminal cockpits and local agent observability.",
+  "owner": {
+    "name": "abhishekash"
+  },
+  "metadata": {
+    "description": "Nine focused skills extracted from the Agenturm terminal-cockpit effort.",
+    "version": "1.0.0"
+  },
+  "plugins": [
+    {
+      "name": "agenturm-tui",
+      "description": "Design, build, test, and operate a truthful terminal cockpit for live agent work.",
+      "version": "1.0.0",
+      "source": "./",
+      "author": {
+        "name": "abhishekash"
+      },
+      "strict": false,
+      "skills": [
+        "./skills/terminal-cockpit-design",
+        "./skills/textual-tui-engineering",
+        "./skills/tui-regression-testing",
+        "./skills/agent-session-status",
+        "./skills/local-agent-ingestion",
+        "./skills/sqlite-telemetry-store",
+        "./skills/monitoring-performance-budgets",
+        "./skills/local-first-monitoring-privacy",
+        "./skills/terminal-demo-media"
+      ]
+    }
+  ]
+}

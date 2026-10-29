@@ -2,6 +2,7 @@
 """Zero-dependency validator for the Agenturm TUI skills repo."""
 from __future__ import annotations
 
+import json
 import re
 import sys
 from pathlib import Path
@@ -90,6 +91,76 @@ def main() -> int:
     for name in names:
         if f"skills/{name}/SKILL.md" not in readme:
             errors.append(f"README.md: missing table entry for {name}")
+
+    def load_json(relative: str) -> dict:
+        path = ROOT / relative
+        try:
+            return json.loads(path.read_text(encoding="utf-8"))
+        except OSError as exc:
+            errors.append(f"{relative}: cannot read: {exc}")
+        except json.JSONDecodeError as exc:
+            errors.append(f"{relative}: invalid JSON: {exc}")
+        return {}
+
+    manifest = load_json("skills.json")
+    package = load_json("package.json")
+    claude_plugin = load_json(".claude-plugin/plugin.json")
+    marketplace = load_json(".claude-plugin/marketplace.json")
+    codex_plugin = load_json(".codex-plugin/plugin.json")
+
+    versions = {
+        "skills.json": manifest.get("version"),
+        "package.json": package.get("version"),
+        ".claude-plugin/plugin.json": claude_plugin.get("version"),
+        ".claude-plugin/marketplace.json": (marketplace.get("metadata") or {}).get("version"),
+        ".codex-plugin/plugin.json": codex_plugin.get("version"),
+    }
+    unique_versions = {version for version in versions.values() if version}
+    if len(unique_versions) != 1 or None in versions.values():
+        errors.append(f"version mismatch across manifests: {versions}")
+    elif not any(f"## {version}" in (ROOT / "CHANGELOG.md").read_text(encoding="utf-8")
+                 for version in unique_versions):
+        errors.append("CHANGELOG.md: missing a section for the current version")
+
+    declared = manifest.get("skills", [])
+    declared_names = [item.get("name") for item in declared if isinstance(item, dict)]
+    if sorted(declared_names) != sorted(names):
+        errors.append(f"skills.json: skills {declared_names} do not match directories {sorted(names)}")
+    for item in declared:
+        if not isinstance(item, dict):
+            errors.append("skills.json: every skill entry must be an object")
+            continue
+        path = item.get("path", "")
+        if not (ROOT / path).is_dir():
+            errors.append(f"skills.json: missing path {path!r}")
+        if not item.get("description"):
+            errors.append(f"skills.json: {item.get('name')} missing description")
+
+    targets = manifest.get("targets", {})
+    if not targets:
+        errors.append("skills.json: no install targets")
+    if len(set(targets.values())) != len(targets):
+        errors.append("skills.json: duplicate target paths")
+    for name, path in targets.items():
+        if not (path.startswith("~/") or path.startswith("/")):
+            errors.append(f"skills.json: target {name} must be an absolute or ~ path")
+    if package.get("pi", {}).get("skills") != ["./skills"]:
+        errors.append("package.json: pi.skills must be ['./skills']")
+
+    plugins = marketplace.get("plugins") or []
+    if len(plugins) != 1:
+        errors.append(".claude-plugin/marketplace.json: expected exactly one plugin")
+    else:
+        plugin_skills = plugins[0].get("skills") or []
+        expected = ["./" + item["path"] for item in declared if isinstance(item, dict)]
+        if plugin_skills != expected:
+            errors.append(".claude-plugin/marketplace.json: plugin skills do not match skills.json")
+        if plugins[0].get("name") != claude_plugin.get("name"):
+            errors.append(".claude-plugin: marketplace plugin name does not match plugin.json")
+        if codex_plugin.get("name") != claude_plugin.get("name"):
+            errors.append(".codex-plugin/plugin.json: name does not match the Claude plugin")
+    if codex_plugin.get("skills") != "./skills/":
+        errors.append(".codex-plugin/plugin.json: skills must be './skills/'")
 
     if errors:
         print("Skill validation failed:\n", file=sys.stderr)

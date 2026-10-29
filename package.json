@@ -1,0 +1,32 @@
+{
+  "name": "agenturm-tui-skills",
+  "version": "1.0.0",
+  "description": "Nine production skills for designing, building, testing, and operating a truthful terminal cockpit for live agent work.",
+  "type": "module",
+  "private": true,
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/abhishekash/skills.git"
+  },
+  "homepage": "https://github.com/abhishekash/skills",
+  "keywords": [
+    "agent-skills",
+    "skills",
+    "tui",
+    "terminal",
+    "textual",
+    "observability",
+    "agents"
+  ],
+  "scripts": {
+    "validate": "python3 scripts/validate_skills.py",
+    "install:opencode": "python3 scripts/install.py --target opencode",
+    "install:claude": "python3 scripts/install.py --target claude-code"
+  },
+  "pi": {
+    "skills": [
+      "./skills"
+    ]
+  }
+}

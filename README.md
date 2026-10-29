@@ -1,5 +1,9 @@
 # Agenturm TUI skills
 
+[![CI](https://github.com/abhishekash/skills/actions/workflows/ci.yml/badge.svg)](https://github.com/abhishekash/skills/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Skills: 9](https://img.shields.io/badge/skills-9-ffbd69)](skills)
+
 Nine production skills extracted from the six-day effort to turn **Agenturm** — a
 local, terminal-first monitor for Codex, Claude Code, OpenCode, Pi, and
 OpenTelemetry agents — from a cluttered dashboard into a calm, evidence-first
@@ -13,6 +17,58 @@ silently broke the product's core feature.
 
 The full story, including what failed and why, is in
 **[docs/agenturm-tui-retrospective.md](docs/agenturm-tui-retrospective.md)**.
+
+## Install
+
+The fastest path, for any harness supported by the open skills CLI:
+
+```bash
+npx skills add abhishekash/skills
+```
+
+From a checkout, use the dependency-free installer (Python 3.10+; the skills
+themselves are plain markdown):
+
+```bash
+git clone https://github.com/abhishekash/skills.git
+cd skills
+./install.sh --target opencode        # or claude-code, codex, cursor, gemini-cli, agents
+```
+
+By default the installer **copies** each skill directory and writes a
+`.agenturm-skill` marker so `--remove` can identify what it owns. Use `--link` to
+symlink, so `git pull` updates the installed skills in place.
+
+| Command | Purpose |
+|---|---|
+| `./install.sh --target opencode` | Install to `~/.config/opencode/skills` |
+| `./install.sh --target claude-code` | Install to `~/.claude/skills` |
+| `./install.sh --all` | Install to every known target |
+| `./install.sh --dest ./.agents/skills` | Install to an explicit directory |
+| `./install.sh --target opencode --link` | Symlink instead of copy |
+| `./install.sh --target opencode --force` | Replace existing destinations |
+| `./install.sh --target opencode --dry-run` | Show the plan, change nothing |
+| `./install.sh --list` | List skills and target paths |
+| `./install.sh --target opencode --remove` | Remove installed copies/symlinks |
+
+Claude Code can also install it as a plugin marketplace:
+
+```text
+/plugin marketplace add abhishekash/skills
+/plugin install agenturm-tui@agenturm-skills
+```
+
+Codex plugin metadata is included at `.codex-plugin/plugin.json`; use your Codex
+plugin/marketplace flow, or install directly to the shared `~/.agents/skills`
+directory with the installer.
+
+Manual fallback:
+
+```bash
+cp -r skills/* ~/.config/opencode/skills/
+```
+
+Restart the agent after installing so it discovers the new skills.
 
 ## The skills
 
@@ -74,22 +130,55 @@ A typical sequence:
 - **Measure the right thing.** Component budgets are not an RSS cap; a
   microbenchmark is not the app; 12 samples are not a production p95.
 
-## Using the skills
+## Packaging
 
-Each skill is a `SKILL.md` with flat `name` / `description` frontmatter and a
-routing-oriented description. Point any compatible harness at `skills/`, or copy
-the directories into your skills path:
+The repository is a complete skill pack, not just a folder of markdown:
 
-```bash
-git clone https://github.com/abhishekash/skills.git
-cp -r skills/skills/* ~/.config/opencode/skills/
+| File | Purpose |
+|---|---|
+| `skills/<name>/SKILL.md` | The nine skills, in the portable Agent Skills format |
+| `skills.json` | Machine-readable manifest: version, skills, descriptions, tags, install targets |
+| `install.sh` / `scripts/install.py` | Zero-dependency installer with copy/link, target detection, dry-run, force, remove |
+| `.claude-plugin/plugin.json` | Claude Code plugin metadata |
+| `.claude-plugin/marketplace.json` | Claude Code marketplace entry (`agenturm-tui@agenturm-skills`) |
+| `.codex-plugin/plugin.json` | Codex plugin metadata and skill root |
+| `package.json` | Repo metadata, validation/install scripts, Pi skill path |
+| `CHANGELOG.md` | Versioned release notes |
+| `scripts/validate_skills.py` | Frontmatter, naming, routing, links, manifest consistency |
+| `.github/workflows/ci.yml` | Validation + installer smoke test |
+| `.github/workflows/release.yml` | Builds and attaches a zip on `v*` tags |
+
+```text
+skills/
+├── README.md
+├── CHANGELOG.md
+├── LICENSE
+├── install.sh
+├── skills.json
+├── package.json
+├── .claude-plugin/
+├── .codex-plugin/
+├── docs/
+│   └── agenturm-tui-retrospective.md
+├── scripts/
+│   ├── install.py
+│   └── validate_skills.py
+└── skills/
+    ├── terminal-cockpit-design/SKILL.md
+    ├── textual-tui-engineering/SKILL.md
+    ├── tui-regression-testing/SKILL.md
+    ├── agent-session-status/SKILL.md
+    ├── local-agent-ingestion/SKILL.md
+    ├── sqlite-telemetry-store/SKILL.md
+    ├── monitoring-performance-budgets/SKILL.md
+    ├── local-first-monitoring-privacy/SKILL.md
+    └── terminal-demo-media/SKILL.md
 ```
 
-With a skills installer that supports GitHub sources:
-
-```bash
-npx skills add abhishekash/skills
-```
+Each skill has flat `name` / `description` frontmatter written as a routing
+trigger, so progressive disclosure works across harnesses. The nine skills are
+intentionally separate: an agent loads only the skill relevant to the task, not a
+3,000-line monolith.
 
 ## Provenance and method
 
@@ -117,10 +206,13 @@ which remain unvalidated.
 
 ```bash
 python3 scripts/validate_skills.py
+./install.sh --target opencode --dest /tmp/skills-smoke --dry-run
 ```
 
 The validator checks frontmatter, name/directory agreement, routing language,
-required sections, and cross-skill links. CI runs it on every push.
+required sections, cross-skill links, manifest/version consistency, plugin skill
+lists, and target paths. CI also installs into a temporary directory and checks
+that all nine `SKILL.md` files arrive.
 
 ## License
 

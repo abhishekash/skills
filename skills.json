@@ -1,0 +1,72 @@
+{
+  "name": "agenturm-tui-skills",
+  "version": "1.0.0",
+  "description": "Nine production skills for designing, building, testing, and operating a truthful terminal cockpit for live agent work.",
+  "license": "MIT",
+  "repository": "https://github.com/abhishekash/skills",
+  "homepage": "https://github.com/abhishekash/skills",
+  "skills": [
+    {
+      "name": "terminal-cockpit-design",
+      "path": "skills/terminal-cockpit-design",
+      "description": "Design a keyboard-first terminal cockpit: IA, responsive layout, evidence-based status, attention, and acceptance criteria.",
+      "tags": ["tui", "ux", "design", "observability"]
+    },
+    {
+      "name": "textual-tui-engineering",
+      "path": "skills/textual-tui-engineering",
+      "description": "Implement the cockpit in Textual: DataTable projection, lazy views, stale-scope rejection, reflow, and shutdown.",
+      "tags": ["textual", "python", "tui", "engineering"]
+    },
+    {
+      "name": "tui-regression-testing",
+      "path": "skills/tui-regression-testing",
+      "description": "Test TUIs without trusting screenshots: headless Pilot tests, core-flow regressions, race matrices, real PTY.",
+      "tags": ["testing", "tui", "textual", "regression"]
+    },
+    {
+      "name": "agent-session-status",
+      "path": "skills/agent-session-status",
+      "description": "Classify agent state from evidence: working, quiet, waiting, stalled, finished, or unknown.",
+      "tags": ["agents", "status", "observability", "attention"]
+    },
+    {
+      "name": "local-agent-ingestion",
+      "path": "skills/local-agent-ingestion",
+      "description": "Read local agent logs/databases with byte budgets, fair resumption, schema drift, and content-free diagnostics.",
+      "tags": ["ingestion", "agents", "local-first", "sqlite"]
+    },
+    {
+      "name": "sqlite-telemetry-store",
+      "path": "skills/sqlite-telemetry-store",
+      "description": "Store live agent telemetry in SQLite: indexes, bounded derived data, writer locks, retention, DuckDB decision.",
+      "tags": ["sqlite", "storage", "telemetry", "performance"]
+    },
+    {
+      "name": "monitoring-performance-budgets",
+      "path": "skills/monitoring-performance-budgets",
+      "description": "Benchmark and budget a local monitor: whole-app workloads, deterministic limits, honest resource claims.",
+      "tags": ["performance", "benchmark", "monitoring", "resources"]
+    },
+    {
+      "name": "local-first-monitoring-privacy",
+      "path": "skills/local-first-monitoring-privacy",
+      "description": "Design capture, diagnostics, preferences, exports, and retention for a monitor that sees sensitive work.",
+      "tags": ["privacy", "security", "local-first", "monitoring"]
+    },
+    {
+      "name": "terminal-demo-media",
+      "path": "skills/terminal-demo-media",
+      "description": "Produce honest, legible terminal demo media from real captures: README sizing, synthetic data, visual QA.",
+      "tags": ["media", "demo", "gif", "release"]
+    }
+  ],
+  "targets": {
+    "opencode": "~/.config/opencode/skills",
+    "claude-code": "~/.claude/skills",
+    "codex": "~/.agents/skills",
+    "cursor": "~/.cursor/skills",
+    "gemini-cli": "~/.gemini/skills",
+    "agents": "~/.config/agents/skills"
+  }
+}
