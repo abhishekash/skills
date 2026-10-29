@@ -226,6 +226,32 @@ if self.size.width <= 0:
     return
 ```
 
+## Evidence rendering
+
+Evidence is not plain text. Tool results arrive as nested JSON, JSON-encoded
+strings, shell-wrapped heredocs, diffs, and one-key envelopes. Render them for
+reading, not as `str(dict)`.
+
+- Unwrap single-key envelopes such as `recorded_content`, `content`, `payload`,
+  and `wrapper` without consuming the recursion budget or repeating the label.
+- If a text field contains embedded JSON, pretty-print the JSON segments and keep
+  surrounding prose as text.
+- Pretty-print dict/list arguments and nested evidence with `indent=2`.
+- Preserve `diff`/`patch` as a diff lexer, shell as bash, and Python as Python.
+- Detect a shell heredoc and render the script body with the right language
+  instead of dumping the whole command line.
+- Depth-limit recursive rendering (Agenturm: 64) and cap displayed payloads.
+- `RichLog.clear()` must also clear the current text selection; otherwise Ctrl+C
+  after an update copies the previous event.
+- Provide `plain_text` and `get_selection()` for copy actions, and strip trailing
+  whitespace per line.
+- If JSON is malformed or too deep, show the raw text with a clear truncation
+  marker rather than raising.
+
+The user-visible bug that drove this: "at times, session inspector renders like
+this and json are not indented properly." The fix was in the evidence renderer,
+not the layout.
+
 ## Live feed: immutable scopes and atomic snapshots
 
 Capture every input that affects a response **before** I/O:

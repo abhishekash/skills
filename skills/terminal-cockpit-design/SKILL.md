@@ -137,6 +137,11 @@ row under the cursor.
 list at 8–10 rows was rejected immediately; the correct fix was a 25% top
 overview with list and inspector sharing the remaining height.
 
+If internal review sessions are hidden by default, enforce that exclusion
+everywhere: session rows, connection counts, summaries, and traces. Filtering
+only the visible table is not enough; stored telemetry can reintroduce the same
+session through another path.
+
 ## Inspector
 
 Default reading order:
@@ -291,6 +296,24 @@ absence and keep the closest valid context.
 - Static "Working" text must communicate activity fully. No pulsing panels or
   continuous repaint.
 - On theme change, recolor cached Rich strips and syntax backgrounds too.
+
+## When taste is the blocker
+
+Do not argue about a mark or header in the abstract. Render **10 options in the
+real app**, at real terminal sizes, with real themes and fonts, and compare them
+side by side. Agenturm's header-options generator produced wordmark, stacked,
+caps, left-aligned, spaced-caps, wordmark-only, italic-tagline, amber-name,
+prompt, and lavender-underline variants. The outcome was not one of the ten: the
+user removed the logo entirely and kept a one-line wordmark. That decision was
+only obvious after seeing the space cost in the real UI.
+
+Rules for option reviews:
+
+- use the real widget/theme/font, not a mock;
+- include the compact and wide layouts;
+- keep synthetic data identical across options;
+- measure rows consumed and contrast, not just appearance;
+- let the user pick by number, then wire the chosen option.
 
 ## Acceptance criteria
 

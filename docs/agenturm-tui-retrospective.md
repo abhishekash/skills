@@ -114,6 +114,7 @@ Six things explain almost every TUI decision that survived:
 | Row under cursor moved during live updates | List re-sorted on every refresh | Freeze order while navigating; queue "Order changed · Apply"; apply on explicit refresh/re-entry | `test_live_priority_changes_queue_order...` |
 | Rows arriving after an empty start were dropped | Order-freeze logic treated the initial empty order as authoritative | Detect empty→non-empty transition and rebuild order | `test_sessions_arriving_after_empty_start...` |
 | Hidden views were rebuilt every refresh | All tabs rendered unconditionally | Render only the active tab; refresh hidden view on activation from latest snapshot | `test_hidden_views_do_no_render_work...` |
+| Hidden review sessions reappeared | Stored OTLP summaries re-added reviews that the visible table filtered out | Exclude reviews consistently from rows, connections, and summaries | `test_hidden_reviews_are_not_reintroduced_from_stored_otlp_summaries` |
 | Span selection lost after tab switch | Tree cursor initialized via a deferred paint callback that raced activation | Build line mapping before moving cursor; preserve selected span ID | `test_span_cursor_is_initialized...`, `test_keyboard_tab_navigation...` |
 
 ### 4.3 Truth and status

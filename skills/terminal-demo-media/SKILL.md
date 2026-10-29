@@ -169,6 +169,7 @@ regression test. The final GIF was 1600×1580, 19 s, 228 frames, 3.64 MiB.
 ## Checklist
 
 - [ ] Real TUI capture; synthetic data labeled.
+- [ ] Capture from the shipping checkout/version, not a stale global install.
 - [ ] Storyboard shows a real investigation, not chrome.
 - [ ] README capture sized for GitHub (~100 columns); full-res video linked.
 - [ ] Canonical SVG used for brand renders; no hand-drawn terminal logo.

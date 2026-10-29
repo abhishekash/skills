@@ -199,6 +199,10 @@ The demo is another client of the UI contract. Test it:
   view is now empty by design, activate it first; do not remove the assertion
   that its selected span survives.
 - **A headless pass is not a terminal pass.** Report what was not verified.
+- **Verify the artifact under test.** Agenturm's "old logo" was a stale global
+  `uv tool` install pinned to an older commit; restarting the app was not enough.
+  Run from the checkout (or reinstall and confirm the version) before diagnosing
+  a UI regression.
 - **Screenshots are evidence, not tests.** They cannot catch stale data or focus
   loss.
 - **A fake feed is a contract.** When the real `Snapshot` changes, update every
